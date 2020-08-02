@@ -37,6 +37,50 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## Files/Folder structure guidelines:
+
+Structure projects is to group similar files together, for example:
+
+```
+api/
+  APIUtils.js
+  APIUtils.test.js
+  ProfileAPI.js
+  UserAPI.js
+components/
+  Avatar.js
+  Avatar.css
+  Feed.js
+  Feed.css
+  FeedStory.js
+  FeedStory.test.js
+  Profile.js
+  ProfileHeader.js
+  ProfileHeader.css
+```
+
+If a child component is used for a specific component:
+
+```
+pages/
+ homepage/
+  index.js
+  NavigationButton.js
+```
+
+If the component is later generalised:
+
+```
+pages/
+ HomePage.js
+components/
+ NavigationButton.js
+```
+
+## Commit messages format:
+
+`[<ticket number>][<initials>] <message>`
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
