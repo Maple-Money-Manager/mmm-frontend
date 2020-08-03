@@ -1,12 +1,9 @@
 import React from "react";
 import "./App.css";
+import HomePage from "./pages/HomePage";
 
 function App() {
-  return (
-    <>
-      <p>mmm-frontend</p>
-    </>
-  );
+  return <HomePage />;
 }
 
 export default App;
