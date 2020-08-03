@@ -1,4 +1,10 @@
 import React from "react";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -25,12 +31,31 @@ class HomePage extends React.Component {
   render() {
     return (
       <div>
-        <div>
-          <input type="number" onChange={this.handleExpenseChange} />
-          <button onClick={() => this.handleSaveExpense(this.state.expense)}>
+        <Box component="div" display="inline" p={1} m={1}>
+          <FormControl variant="outlined" p={1} m={1}>
+            <InputLabel margin="dense" htmlFor="outlined-adornment-amount">
+              Amount
+            </InputLabel>
+            <OutlinedInput
+              type="number"
+              id="outlined-adornment-amount"
+              onChange={this.handleExpenseChange}
+              startAdornment={
+                <InputAdornment position="start">$</InputAdornment>
+              }
+              top={20}
+            />
+          </FormControl>
+        </Box>
+        <Box component="div" display="inline">
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => this.handleSaveExpense(this.state.expense)}
+          >
             Save expense
-          </button>
-        </div>
+          </Button>
+        </Box>
         <div>
           <ul>
             {this.state.expenseList.map((item) => {
