@@ -1,10 +1,8 @@
-import React from "react";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
+import React from 'react';
+import { Grid, Container, Button, Box, OutlinedInput } from '@material-ui/core';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -12,6 +10,8 @@ class HomePage extends React.Component {
     this.state = {
       expense: 0,
       expenseList: [],
+      dateInput: '',
+      dateList: [],
     };
   }
 
@@ -20,50 +20,76 @@ class HomePage extends React.Component {
       expense: e.target.value,
     });
   };
-
-  handleSaveExpense = (item) => {
-    const newList = [...this.state.expenseList, item];
+  handleChangeDate = (e) => {
     this.setState({
-      expenseList: newList,
+      dateInput: e.target.value,
     });
   };
 
+  handleSaveExpense = (item, date) => {
+    const newList = [...this.state.expenseList, item];
+    const newDateList = [...this.state.dateList, date];
+    this.setState({
+      expenseList: newList,
+      dateList: newDateList,
+    });
+  };
+
+  savingFunctionality = () => {};
+
   render() {
     return (
-      <div>
-        <Box component="div" display="inline" p={1} m={1}>
-          <FormControl variant="outlined" p={1} m={1}>
-            <InputLabel margin="dense" htmlFor="outlined-adornment-amount">
-              Amount
-            </InputLabel>
-            <OutlinedInput
-              type="number"
-              id="outlined-adornment-amount"
-              onChange={this.handleExpenseChange}
-              startAdornment={
-                <InputAdornment position="start">$</InputAdornment>
+      <Container justify="center">
+        <Box m={10} />
+        <InputLabel htmlFor="outlined-adornment-amount">Expense Log</InputLabel>
+        <Grid container component="div" spacing={3}>
+          <Grid item>
+            <FormControl variant="outlined">
+              <OutlinedInput
+                type="number"
+                id="outlined-adornment-amount"
+                onChange={this.handleExpenseChange}
+                startAdornment={
+                  <InputAdornment position="start">$</InputAdornment>
+                }
+              />
+            </FormControl>
+          </Grid>
+          <Grid item>
+            <FormControl>
+              <OutlinedInput
+                type="string"
+                id="outlined-adornment-date"
+                onChange={this.handleChangeDate}
+                startAdornment={
+                  <InputAdornment position="start">Date</InputAdornment>
+                }
+              />
+            </FormControl>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() =>
+                this.handleSaveExpense(this.state.expense, this.state.dateInput)
               }
-              top={20}
-            />
-          </FormControl>
-        </Box>
-        <Box component="div" display="inline">
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => this.handleSaveExpense(this.state.expense)}
-          >
-            Save expense
-          </Button>
-        </Box>
-        <div>
-          <ul>
+            >
+              Save expense
+            </Button>
+          </Grid>
+        </Grid>
+        <ol>
+          <Box m={2}>
             {this.state.expenseList.map((item) => {
               return <li>${item}</li>;
             })}
-          </ul>
-        </div>
-      </div>
+            {this.state.dateList.map((item) => {
+              return <li>Expense Date{item}</li>;
+            })}
+          </Box>
+        </ol>
+      </Container>
     );
   }
 }
