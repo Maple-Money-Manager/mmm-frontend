@@ -1,8 +1,8 @@
-import React from 'react';
-import { Grid, Container, Button, Box, OutlinedInput } from '@material-ui/core';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import React from "react";
+import { Grid, Container, Button, Box, OutlinedInput } from "@material-ui/core";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -10,7 +10,8 @@ class HomePage extends React.Component {
     this.state = {
       expense: 0,
       expenseList: [],
-      dateInput: '',
+      category: "",
+      dateInput: "",
       dateList: [],
     };
   }
@@ -23,6 +24,12 @@ class HomePage extends React.Component {
   handleChangeDate = (e) => {
     this.setState({
       dateInput: e.target.value,
+    });
+  };
+
+  handleCategoryChange = (e) => {
+    this.setState({
+      category: e.target.value,
     });
   };
 
@@ -42,7 +49,7 @@ class HomePage extends React.Component {
       <Container justify="center">
         <Box m={10} />
         <InputLabel htmlFor="outlined-adornment-amount">Expense Log</InputLabel>
-        <Grid container component="div" spacing={3}>
+        <Grid container direction="column" component="div" spacing={3}>
           <Grid item>
             <FormControl variant="outlined">
               <OutlinedInput
@@ -51,6 +58,18 @@ class HomePage extends React.Component {
                 onChange={this.handleExpenseChange}
                 startAdornment={
                   <InputAdornment position="start">$</InputAdornment>
+                }
+              />
+            </FormControl>
+          </Grid>
+          <Grid item>
+            <FormControl variant="outlined">
+              <OutlinedInput
+                type="string"
+                id="outlined-adornment-category"
+                onChange={this.handleCategoryChange}
+                startAdornment={
+                  <InputAdornment position="start">Category</InputAdornment>
                 }
               />
             </FormControl>
@@ -72,7 +91,14 @@ class HomePage extends React.Component {
               variant="outlined"
               color="primary"
               onClick={() =>
-                this.handleSaveExpense(this.state.expense, this.state.dateInput)
+                this.handleSaveExpense(
+                  {
+                    expense: this.state.expense,
+                    date: this.state.dateInput,
+                    category: this.state.category,
+                  },
+                  this.state.dateInput
+                )
               }
             >
               Save expense
@@ -82,11 +108,23 @@ class HomePage extends React.Component {
         <ol>
           <Box m={2}>
             {this.state.expenseList.map((item) => {
+              return (
+                <li>
+                  Category: {item.category}
+                  <br />
+                  Amount ${item.expense}
+                  <br />
+                  Date: {item.date}
+                  <br />
+                </li>
+              );
+            })}
+            {/* {this.state.expenseList.map((item) => {
               return <li>${item}</li>;
             })}
             {this.state.dateList.map((item) => {
-              return <li>Expense Date{item}</li>;
-            })}
+              return <li>Expense Date: {item}</li>;
+            })} */}
           </Box>
         </ol>
       </Container>
