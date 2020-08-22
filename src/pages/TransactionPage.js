@@ -1,8 +1,15 @@
-import React from "react";
-import { Grid, Container, Button, Box, OutlinedInput } from "@material-ui/core";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import React from 'react';
+import { Grid, Container, Button, Box, OutlinedInput } from '@material-ui/core';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+  DatePicker,
+} from '@material-ui/pickers';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -10,8 +17,8 @@ class HomePage extends React.Component {
     this.state = {
       expense: 0,
       expenseList: [],
-      category: "",
-      dateInput: "",
+      category: '',
+      selectedDate: new Date(),
       dateList: [],
     };
   }
@@ -21,9 +28,10 @@ class HomePage extends React.Component {
       expense: e.target.value,
     });
   };
-  handleChangeDate = (e) => {
+
+  handleDateChange = (date) => {
     this.setState({
-      dateInput: e.target.value,
+      selectedDate: date,
     });
   };
 
@@ -41,8 +49,6 @@ class HomePage extends React.Component {
       dateList: newDateList,
     });
   };
-
-  savingFunctionality = () => {};
 
   render() {
     return (
@@ -74,17 +80,20 @@ class HomePage extends React.Component {
               />
             </FormControl>
           </Grid>
-          <Grid item>
-            <FormControl>
-              <OutlinedInput
-                type="string"
-                id="outlined-adornment-date"
-                onChange={this.handleChangeDate}
-                startAdornment={
-                  <InputAdornment position="start">Date</InputAdornment>
-                }
+          <Grid container item>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                margin="normal"
+                id="date-picker-dialog"
+                label="Date picker dialog"
+                format="MM/dd/yyyy"
+                value={this.state.selectedDate}
+                onChange={this.handleDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
               />
-            </FormControl>
+            </MuiPickersUtilsProvider>
           </Grid>
           <Grid item>
             <Button
@@ -94,10 +103,10 @@ class HomePage extends React.Component {
                 this.handleSaveExpense(
                   {
                     expense: this.state.expense,
-                    date: this.state.dateInput,
+                    date: this.state.selectedDate,
                     category: this.state.category,
                   },
-                  this.state.dateInput
+                  this.state.selectedDate
                 )
               }
             >
@@ -114,7 +123,7 @@ class HomePage extends React.Component {
                   <br />
                   Amount ${item.expense}
                   <br />
-                  Date: {item.date}
+                  Date: {item.date.toLocaleString()}
                   <br />
                 </li>
               );
