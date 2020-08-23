@@ -6,7 +6,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-  DatePicker,
 } from '@material-ui/pickers';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -128,12 +127,6 @@ class HomePage extends React.Component {
                 </li>
               );
             })}
-            {/* {this.state.expenseList.map((item) => {
-              return <li>${item}</li>;
-            })}
-            {this.state.dateList.map((item) => {
-              return <li>Expense Date: {item}</li>;
-            })} */}
           </Box>
         </ol>
       </Container>
