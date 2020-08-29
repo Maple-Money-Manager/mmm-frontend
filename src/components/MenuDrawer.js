@@ -58,7 +58,10 @@ const MenuDrawer = ({ currentPage, setCurrentPage }) => {
           </ListItemIcon>
           <ListItemText primary={"Home"} />
         </ListItem>
-        <ListItem button key={"Lorem"} onClick={() => checkAndUpdatePage("Lorem")}>
+        <ListItem
+          button
+          key={"Lorem"}
+          onClick={() => checkAndUpdatePage("Lorem")}>
           <ListItemIcon>
             <CategoryIcon />
           </ListItemIcon>
@@ -82,7 +85,8 @@ const MenuDrawer = ({ currentPage, setCurrentPage }) => {
         <Drawer
           anchor={anchor}
           open={menuState[anchor]}
-          onClose={toggleDrawer(anchor, false)}>
+          onClose={toggleDrawer(anchor, false)}
+          aria-label="drawer">
           {list(anchor)}
         </Drawer>
       </React.Fragment>
