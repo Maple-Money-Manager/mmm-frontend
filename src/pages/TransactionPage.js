@@ -1,14 +1,14 @@
-import React from 'react';
-import { Grid, Container, Button, Box, OutlinedInput } from '@material-ui/core';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import React from "react";
+import { Grid, Container, Button, Box, OutlinedInput } from "@material-ui/core";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from '@material-ui/pickers';
-import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
+} from "@material-ui/pickers";
+import "date-fns";
+import DateFnsUtils from "@date-io/date-fns";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class HomePage extends React.Component {
     this.state = {
       expense: 0,
       expenseList: [],
-      category: '',
+      category: "",
       selectedDate: new Date(),
       dateList: [],
     };
@@ -60,6 +60,7 @@ class HomePage extends React.Component {
               <OutlinedInput
                 type="number"
                 id="outlined-adornment-amount"
+                inputProps={{ "aria-label": "expenseInput" }}
                 onChange={this.handleExpenseChange}
                 startAdornment={
                   <InputAdornment position="start">$</InputAdornment>
@@ -72,6 +73,7 @@ class HomePage extends React.Component {
               <OutlinedInput
                 type="string"
                 id="outlined-adornment-category"
+                inputProps={{ "aria-label": "categoryInput" }}
                 onChange={this.handleCategoryChange}
                 startAdornment={
                   <InputAdornment position="start">Category</InputAdornment>
@@ -88,8 +90,9 @@ class HomePage extends React.Component {
                 format="MM/dd/yyyy"
                 value={this.state.selectedDate}
                 onChange={this.handleDateChange}
+                inputProps={{ "aria-label": "dateInput" }}
                 KeyboardButtonProps={{
-                  'aria-label': 'change date',
+                  "aria-label": "change date",
                 }}
               />
             </MuiPickersUtilsProvider>
@@ -117,7 +120,11 @@ class HomePage extends React.Component {
           <Box m={2}>
             {this.state.expenseList.map((item) => {
               return (
-                <li>
+                <li
+                  key={`${item.category}${
+                    item.expense
+                  }${item.date.toLocaleString()}`}
+                >
                   Category: {item.category}
                   <br />
                   Amount ${item.expense}
