@@ -9,6 +9,7 @@ import {
 } from "@material-ui/pickers";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
+import axios from "axios";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -20,6 +21,12 @@ class HomePage extends React.Component {
       selectedDate: new Date(),
       dateList: [],
     };
+  }
+
+  componentDidMount() {
+    axios
+      .get(`http://localhost:3000/records/get_records`)
+      .then((res) => console.log(res.data));
   }
 
   handleExpenseChange = (e) => {
