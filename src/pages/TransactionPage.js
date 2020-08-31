@@ -78,7 +78,7 @@ class HomePage extends React.Component {
           <Grid item>
             <FormControl variant="outlined">
               <OutlinedInput
-                type="string"
+                type="text"
                 id="outlined-adornment-category"
                 inputProps={{ "aria-label": "categoryInput" }}
                 onChange={this.handleCategoryChange}
@@ -131,10 +131,11 @@ class HomePage extends React.Component {
                   key={`${item.category}${
                     item.expense
                   }${item.date.toLocaleString()}`}
+                  data-testid="expense-list"
                 >
                   Category: {item.category}
                   <br />
-                  Amount ${item.expense}
+                  Amount: ${item.expense}
                   <br />
                   Date: {item.date.toLocaleString()}
                   <br />

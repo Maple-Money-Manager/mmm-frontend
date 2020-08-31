@@ -1,51 +1,63 @@
 import React from "react";
-import { render, fireEvent, wait } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import App from "./App";
+import userEvent from "@testing-library/user-event";
+import axios from "axios";
+jest.mock("axios");
 
-describe("Rendering of components", () => {
-  test("Navbar renders", () => {
+beforeEach(() => {
+  axios.get.mockResolvedValueOnce({ results: [] });
+});
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+describe("Transaction Page", () => {
+  it("should render the Navbar", () => {
     const { getByText } = render(<App />);
     const Navbar = getByText("Maple Money Manager");
     expect(Navbar).toBeInTheDocument();
   });
-  test("Expense log input label renders", () => {
+  it("should render the Expense log input label", () => {
     const { getByText } = render(<App />);
     const expenseLog = getByText("Expense Log");
     expect(expenseLog).toBeInTheDocument();
   });
-  test("Expense form control renders", () => {
+  it("should render the Expense form control", () => {
     const { getByLabelText } = render(<App />);
     const expenseFormControl = getByLabelText("expenseInput");
     expect(expenseFormControl).toBeInTheDocument();
   });
-  test("Category form control renders", () => {
+  it("should render the Category form control", () => {
     const { getByLabelText } = render(<App />);
     const categoryFormControl = getByLabelText("categoryInput");
     expect(categoryFormControl).toBeInTheDocument();
   });
-  test("Date picker renders", () => {
+  it("should render the Date picker", () => {
     const { getByLabelText } = render(<App />);
     const datePicker = getByLabelText("change date");
     expect(datePicker).toBeInTheDocument();
   });
-  test("Save expense button renders", () => {
+  it("should render the Save expense button", () => {
     const { getByText } = render(<App />);
     const expenseButton = getByText("Save expense");
     expect(expenseButton).toBeInTheDocument();
   });
+  it("should render details of expenses after save expense button is clicked", () => {
+    const { getByLabelText, getByText, getAllByTestId } = render(<App />);
+    const expenseFormControl = getByLabelText("expenseInput");
+    const categoryFormControl = getByLabelText("categoryInput");
+    const datePicker = getByLabelText("dateInput");
+    userEvent.type(expenseFormControl, "100");
+    userEvent.type(categoryFormControl, "Hello");
+    userEvent.type(datePicker, "08/12/2020");
+    const expenseButton = getByText("Save expense");
+    userEvent.click(expenseButton);
+    const expenseList = getAllByTestId("expense-list").map(
+      (item) => item.textContent
+    );
+    expect(expenseList[0]).toMatch("Category: Hello");
+    expect(expenseList[0]).toMatch("Amount: $100");
+    expect(expenseList[0]).toMatch("Date: 12/08/2020");
+  });
 });
-
-// test("Rendering of saved expense", async () => {
-//   const { getByLabelText, getByText } = render(<App />);
-//   const expenseFormControl = getByLabelText("expenseInput");
-//   const categoryFormControl = getByLabelText("categoryInput");
-//   const datePicker = getByLabelText("dateInput");
-//   fireEvent.change(expenseFormControl, { target: { value: 20 } });
-//   fireEvent.change(categoryFormControl, { target: { value: "Food" } });
-//   fireEvent.change(datePicker, {
-//     target: { value: "08/21/2020" },
-//   });
-//   const expenseButton = getByText("Save expense");
-//   fireEvent.click(expenseButton);
-//   wait(expect(getByText("20")).toBeInTheDocument());
-// });
