@@ -56,6 +56,27 @@ class HomePage extends React.Component {
     });
   };
 
+  displayExpenseList = () => {
+    const {expenseList} = this.state;
+    return expenseList.map((item) => {
+      return (
+        <li
+          key={`${item.category}${
+            item.expense
+          }${item.date.toLocaleString()}`}
+          data-testid="expense-list"
+        >
+          Category: {item.category}
+          <br />
+          Amount: ${item.expense}
+          <br />
+          Date: {item.date.toLocaleString()}
+          <br />
+        </li>
+      );
+    })
+  }
+
   render() {
     return (
       <Container justify="center">
@@ -125,23 +146,7 @@ class HomePage extends React.Component {
         </Grid>
         <ol>
           <Box m={2}>
-            {this.state.expenseList.map((item) => {
-              return (
-                <li
-                  key={`${item.category}${
-                    item.expense
-                  }${item.date.toLocaleString()}`}
-                  data-testid="expense-list"
-                >
-                  Category: {item.category}
-                  <br />
-                  Amount: ${item.expense}
-                  <br />
-                  Date: {item.date.toLocaleString()}
-                  <br />
-                </li>
-              );
-            })}
+            {this.displayExpenseList}
           </Box>
         </ol>
       </Container>
