@@ -24,9 +24,23 @@ class HomePage extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get(`http://localhost:3000/records/get_records`)
-      .then((res) => console.log(res.data));
+    this.getExpenseRecords();
+  }
+
+  getExpenseRecords = async () => {
+    try {
+      const res = await axios.get(`http://localhost:3000/records/get_records`);
+      const expenseRecords = res.data.map(record => ({
+        expense: record.expense,
+        category: record.category,
+        date: record.date,
+      }));
+      this.setState({
+        expenseList: [...this.state.expenseList, ...expenseRecords]
+      })
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   handleExpenseChange = (e) => {
@@ -57,13 +71,13 @@ class HomePage extends React.Component {
   };
 
   displayExpenseList = () => {
-    const {expenseList} = this.state;
+    const { expenseList } = this.state;
     return expenseList.map((item) => {
       return (
         <li
           key={`${item.category}${
             item.expense
-          }${item.date.toLocaleString()}`}
+            }${item.date}.toLocaleString()`}
           data-testid="expense-list"
         >
           Category: {item.category}
