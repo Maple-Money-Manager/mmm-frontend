@@ -1,0 +1,60 @@
+version: 2.1
+jobs:
+  unit-test:
+    working_directory: ~/app
+    docker:
+      - image: circleci/node:12.16
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: install-dependencies
+          command: "npm install"
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: test-coverage
+          command: "npm run test:coverage"
+      - run:
+          name: linting
+          command: "npm run lint"
+  #deploy-testenv:
+    #working_directory: ~/app
+    #docker:
+    #  - image: buildpack-deps:trusty
+    #steps:
+     # - checkout
+      #- run:
+       #   name: Deploy Editor Master to Heroku testenv
+        #  command: git push https://heroku:$EDITOR_HEROKU_TESTENV_API_KEY@git.heroku.com/$EDITOR_HEROKU_TESTENV.git master
+  #deploy-prod:
+   # working_directory: ~/app
+    #docker:
+     # - image: buildpack-deps:trusty
+    #steps:
+     # - checkout
+     # - run:
+      #    name: Deploy Editor Master to Heroku
+       #   command: git push https://heroku:$EDITOR_HEROKU_API_KEY@git.heroku.com/$EDITOR_HEROKU.git master
+workflows:
+  version: 2.1
+  build:
+    jobs:
+      - unit-test:
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-testenv:
+          requires:
+            - unit-test
+      - deploy-prod:
+          requires:
+            - unit-test
+          filters:
+            branches:
+              only:
+                - master
