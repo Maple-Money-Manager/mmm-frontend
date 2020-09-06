@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import NavBar from "./components/NavBar";
-import HomePage from "./pages/TransactionPage";
+import TransactionPage from "./pages/TransactionPage";
 import EmptyPage from "./pages/EmptyPage";
 
 function App() {
@@ -10,11 +10,11 @@ function App() {
   const renderPage = (pageName) => {
     switch (pageName) {
       case "Home":
-        return <HomePage />;
+        return <TransactionPage />;
       case "Lorem":
         return <EmptyPage />;
       default:
-        return <HomePage />;
+        return <TransactionPage />;
     }
   };
   return (

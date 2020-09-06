@@ -11,7 +11,7 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import axios from "axios";
 
-class HomePage extends React.Component {
+class TransactionPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -168,4 +168,4 @@ class HomePage extends React.Component {
   }
 }
 
-export default HomePage;
+export default TransactionPage;
