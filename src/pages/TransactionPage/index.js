@@ -10,6 +10,7 @@ import {
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import axios from "axios";
+import ExpenseDetailsCard from "./ExpenseDetailsCard";
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -30,18 +31,18 @@ class TransactionPage extends React.Component {
   getExpenseRecords = async () => {
     try {
       const res = await axios.get(`http://localhost:3000/records/get_records`);
-      const expenseRecords = res.data.map(record => ({
+      const expenseRecords = res.data.map((record) => ({
         expense: record.expense,
         category: record.category,
         date: record.date,
       }));
       this.setState({
-        expenseList: [...this.state.expenseList, ...expenseRecords]
-      })
+        expenseList: [...this.state.expenseList, ...expenseRecords],
+      });
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   handleExpenseChange = (e) => {
     this.setState({
@@ -75,9 +76,7 @@ class TransactionPage extends React.Component {
     return expenseList.map((item) => {
       return (
         <li
-          key={`${item.category}${
-            item.expense
-            }${item.date}.toLocaleString()`}
+          key={`${item.category}${item.expense}${item.date}.toLocaleString()`}
           data-testid="expense-list"
         >
           Category: {item.category}
@@ -88,8 +87,8 @@ class TransactionPage extends React.Component {
           <br />
         </li>
       );
-    })
-  }
+    });
+  };
 
   render() {
     return (
@@ -158,11 +157,9 @@ class TransactionPage extends React.Component {
             </Button>
           </Grid>
         </Grid>
-        <ol>
-          <Box m={2}>
-            {this.displayExpenseList}
-          </Box>
-        </ol>
+        <Grid container direction="column" spacing={3}>
+          {ExpenseDetailsCard(this.state.expenseList)}
+        </Grid>
       </Container>
     );
   }
