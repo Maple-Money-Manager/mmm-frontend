@@ -71,25 +71,6 @@ class TransactionPage extends React.Component {
     });
   };
 
-  displayExpenseList = () => {
-    const { expenseList } = this.state;
-    return expenseList.map((item) => {
-      return (
-        <li
-          key={`${item.category}${item.expense}${item.date}.toLocaleString()`}
-          data-testid="expense-list"
-        >
-          Category: {item.category}
-          <br />
-          Amount: ${item.expense}
-          <br />
-          Date: {item.date.toLocaleString()}
-          <br />
-        </li>
-      );
-    });
-  };
-
   render() {
     return (
       <Container justify="center">

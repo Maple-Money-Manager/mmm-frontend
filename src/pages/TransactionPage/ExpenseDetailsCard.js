@@ -11,7 +11,10 @@ import {
 export default function ExpenseDetailsCard(expenseList) {
   return expenseList.map((transaction) => {
     return (
-      <Grid item>
+      <Grid
+        item
+        key={`${transaction.category}${transaction.expense}${transaction.date}.toLocaleString()`}
+      >
         <Card variant="outlined">
           <CardActionArea>
             <CardHeader
@@ -19,7 +22,12 @@ export default function ExpenseDetailsCard(expenseList) {
               subheader={transaction.date.toLocaleString()}
             />
             <CardContent>
-              <Typography variant="body2" color="textSecondary" component="p">
+              <Typography
+                data-testid="expense-list"
+                variant="body2"
+                color="textSecondary"
+                component="p"
+              >
                 Category: {transaction.category} <br />
                 Amount: ${transaction.expense} <br />
                 Date: {transaction.date.toLocaleString()} <br />

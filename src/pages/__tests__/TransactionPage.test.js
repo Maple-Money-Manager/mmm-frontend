@@ -53,8 +53,8 @@ describe("Transaction Page", () => {
     const expenseList = getAllByTestId("expense-list").map(
       (item) => item.textContent
     );
-    expect(expenseList[0]).toMatch("Category: Hello");
-    expect(expenseList[0]).toMatch("Amount: $100");
-    expect(expenseList[0]).toMatch("Date: 12/08/2020");
+    expect(expenseList[0]).toMatch(
+      "Category: Hello Amount: $100 Date: 8/12/2020, 00:00:00 "
+    );
   });
 });
