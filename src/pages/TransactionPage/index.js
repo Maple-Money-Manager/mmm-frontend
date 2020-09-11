@@ -11,6 +11,8 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import axios from "axios";
 import ExpenseDetailsCard from "./ExpenseDetailsCard";
+import { BrowserRouter, Route, RouteProps, Switch } from "react-router-dom";
+import ExpenseDetailsFull from "./ExpenseDetailsFull";
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -73,75 +75,95 @@ class TransactionPage extends React.Component {
 
   render() {
     return (
-      <Container justify="center">
-        <Box m={10} />
-        <InputLabel htmlFor="outlined-adornment-amount">Expense Log</InputLabel>
-        <Grid container direction="column" component="div" spacing={3}>
-          <Grid item>
-            <FormControl variant="outlined">
-              <OutlinedInput
-                type="number"
-                id="outlined-adornment-amount"
-                inputProps={{ "aria-label": "expenseInput" }}
-                onChange={this.handleExpenseChange}
-                startAdornment={
-                  <InputAdornment position="start">$</InputAdornment>
-                }
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/">
+            <Container justify="center">
+              <Box m={10} />
+              <InputLabel htmlFor="outlined-adornment-amount">
+                Expense Log
+              </InputLabel>
+              <Grid container direction="column" component="div" spacing={3}>
+                <Grid item>
+                  <FormControl variant="outlined">
+                    <OutlinedInput
+                      type="number"
+                      id="outlined-adornment-amount"
+                      inputProps={{ "aria-label": "expenseInput" }}
+                      onChange={this.handleExpenseChange}
+                      startAdornment={
+                        <InputAdornment position="start">$</InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <FormControl variant="outlined">
+                    <OutlinedInput
+                      type="text"
+                      id="outlined-adornment-category"
+                      inputProps={{ "aria-label": "categoryInput" }}
+                      onChange={this.handleCategoryChange}
+                      startAdornment={
+                        <InputAdornment position="start">
+                          Category
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid container item>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      margin="normal"
+                      id="date-picker-dialog"
+                      label="Date picker dialog"
+                      format="MM/dd/yyyy"
+                      value={this.state.selectedDate}
+                      onChange={this.handleDateChange}
+                      inputProps={{ "aria-label": "dateInput" }}
+                      KeyboardButtonProps={{
+                        "aria-label": "change date",
+                      }}
+                    />
+                  </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() =>
+                      this.handleSaveExpense(
+                        {
+                          expense: this.state.expense,
+                          date: this.state.selectedDate,
+                          category: this.state.category,
+                        },
+                        this.state.selectedDate
+                      )
+                    }
+                  >
+                    Save expense
+                  </Button>
+                </Grid>
+              </Grid>
+              <Grid container direction="column" spacing={3}>
+                {ExpenseDetailsCard(this.state.expenseList)}
+              </Grid>
+            </Container>
+          </Route>
+          <Route
+            exact
+            path="/:uniqueKey"
+            render={(routeProps) => (
+              <ExpenseDetailsFull
+                expenseList={this.state.expenseList}
+                {...routeProps}
               />
-            </FormControl>
-          </Grid>
-          <Grid item>
-            <FormControl variant="outlined">
-              <OutlinedInput
-                type="text"
-                id="outlined-adornment-category"
-                inputProps={{ "aria-label": "categoryInput" }}
-                onChange={this.handleCategoryChange}
-                startAdornment={
-                  <InputAdornment position="start">Category</InputAdornment>
-                }
-              />
-            </FormControl>
-          </Grid>
-          <Grid container item>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                margin="normal"
-                id="date-picker-dialog"
-                label="Date picker dialog"
-                format="MM/dd/yyyy"
-                value={this.state.selectedDate}
-                onChange={this.handleDateChange}
-                inputProps={{ "aria-label": "dateInput" }}
-                KeyboardButtonProps={{
-                  "aria-label": "change date",
-                }}
-              />
-            </MuiPickersUtilsProvider>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() =>
-                this.handleSaveExpense(
-                  {
-                    expense: this.state.expense,
-                    date: this.state.selectedDate,
-                    category: this.state.category,
-                  },
-                  this.state.selectedDate
-                )
-              }
-            >
-              Save expense
-            </Button>
-          </Grid>
-        </Grid>
-        <Grid container direction="column" spacing={3}>
-          {ExpenseDetailsCard(this.state.expenseList)}
-        </Grid>
-      </Container>
+            )}
+          />
+        </Switch>
+      </BrowserRouter>
     );
   }
 }

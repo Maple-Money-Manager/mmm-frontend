@@ -7,16 +7,15 @@ import {
   CardHeader,
   Typography,
 } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 export default function ExpenseDetailsCard(expenseList) {
-  return expenseList.map((transaction) => {
+  return expenseList.map((transaction, index) => {
+    const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
     return (
-      <Grid
-        item
-        key={`${transaction.category}${transaction.expense}${transaction.date}.toLocaleString()`}
-      >
+      <Grid item key={uniqueKey}>
         <Card variant="outlined">
-          <CardActionArea>
+          <CardActionArea component={Link} to={`/${uniqueKey}`}>
             <CardHeader
               title="Transaction Details"
               subheader={transaction.date.toLocaleString()}
