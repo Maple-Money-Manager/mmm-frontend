@@ -9,7 +9,7 @@ import {
 } from "@material-ui/pickers";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
-import axios from "axios";
+import Axios from "axios";
 import ExpenseDetailsCard from "./ExpenseDetailsCard";
 import { BrowserRouter, Route, RouteProps, Switch } from "react-router-dom";
 import ExpenseDetailsFull from "./ExpenseDetailsFull";
@@ -32,7 +32,7 @@ class TransactionPage extends React.Component {
 
   getExpenseRecords = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/records/get_records`);
+      const res = await Axios.get(`http://localhost:3000/records/get_records`);
       const expenseRecords = res.data.map((record) => ({
         expense: record.expense,
         category: record.category,
@@ -64,13 +64,25 @@ class TransactionPage extends React.Component {
     });
   };
 
-  handleSaveExpense = (item, date) => {
-    const newList = [...this.state.expenseList, item];
-    const newDateList = [...this.state.dateList, date];
-    this.setState({
-      expenseList: newList,
-      dateList: newDateList,
-    });
+  handleSaveExpense = async (item, date) => {
+    try {
+      const payload = {
+        expense: this.state.expense,
+        category: this.state.category,
+        date: this.state.selectedDate,
+      };
+      await Axios.post(`http://localhost:3000/records/save_record`, payload);
+      const newList = [...this.state.expenseList, item];
+      const newDateList = [...this.state.dateList, date];
+      this.setState({
+        expenseList: newList,
+        dateList: newDateList,
+      });
+    } catch (error) {
+      if (error.response.status === 400) {
+        alert("Missing information. Fill all necessary details.");
+      }
+    }
   };
 
   render() {
