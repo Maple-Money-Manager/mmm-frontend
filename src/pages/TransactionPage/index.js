@@ -11,7 +11,7 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 import ExpenseDetailsCard from "./ExpenseDetailsCard";
-import { BrowserRouter, Route, RouteProps, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import ExpenseDetailsFull from "./ExpenseDetailsFull";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
