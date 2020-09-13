@@ -1,12 +1,12 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import TransactionPage from "../../pages/TransactionPage";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
 jest.mock("axios");
 
 beforeEach(() => {
-  axios.get.mockResolvedValueOnce({ results: [] });
+  axios.get.mockResolvedValueOnce({ data: [{ expense: 100, category: "test", date: "11/12/1991" }] });
 });
 afterEach(() => {
   jest.clearAllMocks();
@@ -38,7 +38,7 @@ describe("Transaction Page", () => {
     const expenseButton = getByText("Save expense");
     expect(expenseButton).toBeInTheDocument();
   });
-  it("should render details of expenses after save expense button is clicked", () => {
+  it("should render details of expenses after save expense button is clicked", async () => {
     const { getByLabelText, getByText, getAllByTestId } = render(
       <TransactionPage />
     );
@@ -47,14 +47,30 @@ describe("Transaction Page", () => {
     const datePicker = getByLabelText("dateInput");
     userEvent.type(expenseFormControl, "100");
     userEvent.type(categoryFormControl, "Hello");
-    userEvent.type(datePicker, "08/12/2020");
+    userEvent.type(datePicker, "01/13/2020");
     const expenseButton = getByText("Save expense");
     userEvent.click(expenseButton);
-    const expenseList = getAllByTestId("expense-list").map(
-      (item) => item.textContent
-    );
-    expect(expenseList[0]).toMatch(
-      "Category: Hello Amount: $100 Date: 8/12/2020, 00:00:00 "
-    );
+    axios.post.mockResolvedValueOnce({ data: [] });
+    await waitFor(() => {
+      const expenseList = getAllByTestId("expense-list").map(
+        (item) => item.textContent
+      );
+      expect(expenseList[0]).toMatch(
+        "Category: Hello Amount: $100 Date: 13/01/2020, 12:00:00 am "
+      )
+    });
   });
+  it("should render list of saved items that are fetched", async () => {
+    const { getAllByTestId } = render(
+      <TransactionPage />
+    );
+    await waitFor(() => {
+      const expenseList = (getAllByTestId("expense-list").map(
+        (item) => item.textContent
+      ))
+      expect(expenseList[0]).toMatch(
+        "Category: test Amount: $100 Date: 11/12/1991"
+      );
+    })
+  })
 });
