@@ -13,6 +13,7 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+import { Save as SaveIcon, Delete as DeleteIcon } from "@material-ui/icons";
 import { useParams, Link } from "react-router-dom";
 import {
   MuiPickersUtilsProvider,
@@ -49,47 +50,60 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
             </Typography>
           )}
           {editState && (
-            <>
-              <FormControl variant="outlined">
-                <OutlinedInput
-                  type="number"
-                  id="edit-amount-field"
-                  inputProps={{ "aria-label": "editExpenseInput" }}
-                  startAdornment={
-                    <InputAdornment position="start">$</InputAdornment>
-                  }
-                />
-              </FormControl>
-              <FormControl variant="outlined">
-                <OutlinedInput
-                  type="text"
-                  id="edit-category-field"
-                  inputProps={{ "aria-label": "editCategoryInput" }}
-                  defaultValue={expenseList[position].category}
-                />
-              </FormControl>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  margin="normal"
-                  id="date-picker-dialog"
-                  label="Date picker dialog"
-                  format="MM/dd/yyyy"
-                  inputProps={{ "aria-label": "editDateInput" }}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                />
-              </MuiPickersUtilsProvider>
-            </>
+            <Grid container direction="column">
+              <Grid item>
+                <FormControl variant="outlined">
+                  <OutlinedInput
+                    type="text"
+                    id="edit-category-field"
+                    inputProps={{ "aria-label": "editCategoryInput" }}
+                    defaultValue={expenseList[position].category}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item>
+                <FormControl variant="outlined">
+                  <OutlinedInput
+                    type="number"
+                    id="edit-amount-field"
+                    inputProps={{ "aria-label": "editExpenseInput" }}
+                    startAdornment={
+                      <InputAdornment position="start">$</InputAdornment>
+                    }
+                    defaultValue={expenseList[position].expense}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid container item>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <KeyboardDatePicker
+                    margin="normal"
+                    id="date-picker-dialog"
+                    label="Date picker dialog"
+                    format="MM/dd/yyyy"
+                    inputProps={{ "aria-label": "editDateInput" }}
+                    KeyboardButtonProps={{
+                      "aria-label": "change date",
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
+            </Grid>
           )}
         </CardContent>
         <CardActions>
-          <IconButton
-            onClick={() =>
-              editState ? setEditState(false) : setEditState(true)
-            }
-          >
-            <EditIcon />
+          {!editState && (
+            <IconButton onClick={() => setEditState(true)}>
+              <EditIcon />
+            </IconButton>
+          )}
+          {editState && (
+            <IconButton onClick={() => setEditState(false)}>
+              <SaveIcon />
+            </IconButton>
+          )}
+          <IconButton onClick={() => console.log("delete")}>
+            <DeleteIcon />
           </IconButton>
         </CardActions>
       </Card>
