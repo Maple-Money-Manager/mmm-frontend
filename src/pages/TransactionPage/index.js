@@ -13,6 +13,9 @@ import Axios from "axios";
 import ExpenseDetailsCard from "./ExpenseDetailsCard";
 import { BrowserRouter, Route, RouteProps, Switch } from "react-router-dom";
 import ExpenseDetailsFull from "./ExpenseDetailsFull";
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import { withStyles } from '@material-ui/core/styles';
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -23,6 +26,7 @@ class TransactionPage extends React.Component {
       category: "",
       selectedDate: new Date(),
       dateList: [],
+      type: "",
     };
   }
 
@@ -85,7 +89,14 @@ class TransactionPage extends React.Component {
     }
   };
 
+  handleTypeChange = (e) => {
+    this.setState({
+      type: e.target.value
+    })
+  }
+
   render() {
+    const { classes } = this.props;
     return (
       <BrowserRouter>
         <Switch>
@@ -93,7 +104,7 @@ class TransactionPage extends React.Component {
             <Container justify="center">
               <Box m={10} />
               <InputLabel htmlFor="outlined-adornment-amount">
-                Expense Log
+                Amount
               </InputLabel>
               <Grid container direction="column" component="div" spacing={3}>
                 <Grid item>
@@ -107,6 +118,16 @@ class TransactionPage extends React.Component {
                         <InputAdornment position="start">$</InputAdornment>
                       }
                     />
+                  </FormControl>
+                  <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel>Type</InputLabel>
+                    <Select label="Type"
+                      value={this.state.type}
+                      onChange={this.handleTypeChange}
+                    >
+                      <MenuItem value={"Income"}>Income</MenuItem>
+                      <MenuItem value={"Expense"}>Expense</MenuItem>
+                    </Select>
                   </FormControl>
                 </Grid>
                 <Grid item>
@@ -180,4 +201,11 @@ class TransactionPage extends React.Component {
   }
 }
 
-export default TransactionPage;
+const styles = theme => ({
+  formControl: {
+    marginLeft: theme.spacing(1),
+    minWidth: 120,
+  },
+});
+
+export default withStyles(styles)(TransactionPage);
