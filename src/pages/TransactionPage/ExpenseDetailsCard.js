@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 export default function ExpenseDetailsCard(expenseList) {
   return expenseList.map((transaction, index) => {
     const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
+    const expense = transaction.expense > 0 ? `$${transaction.expense}` : `-$${Math.abs(transaction.expense)}`
     return (
       <Grid item key={uniqueKey}>
         <Card variant="outlined">
@@ -28,7 +29,7 @@ export default function ExpenseDetailsCard(expenseList) {
                 component="p"
               >
                 Category: {transaction.category} <br />
-                Amount: ${transaction.expense} <br />
+                Amount: {expense} <br />
                 Date: {transaction.date.toLocaleString()} <br />
               </Typography>
             </CardContent>

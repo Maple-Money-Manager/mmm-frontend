@@ -26,7 +26,7 @@ class TransactionPage extends React.Component {
       category: "",
       selectedDate: new Date(),
       dateList: [],
-      type: "",
+      type: "Expense",
     };
   }
 
@@ -75,13 +75,13 @@ class TransactionPage extends React.Component {
         category: this.state.category,
         date: this.state.selectedDate,
       };
-      await Axios.post(`http://localhost:3000/records/save_record`, payload);
       const newList = [...this.state.expenseList, item];
       const newDateList = [...this.state.dateList, date];
       this.setState({
         expenseList: newList,
         dateList: newDateList,
       });
+      await Axios.post(`http://localhost:3000/records/save_record`, payload);
     } catch (error) {
       if (error.response.status === 400) {
         alert("Missing information. Fill all necessary details.");
@@ -97,6 +97,7 @@ class TransactionPage extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { type, expense } = this.state;
     return (
       <BrowserRouter>
         <Switch>
@@ -119,14 +120,17 @@ class TransactionPage extends React.Component {
                       }
                     />
                   </FormControl>
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel>Type</InputLabel>
-                    <Select label="Type"
-                      value={this.state.type}
+                  <FormControl className={classes.formControl}>
+                    <InputLabel shrink>
+                      Type
+                    </InputLabel>
+                    <Select
+                      value={type}
                       onChange={this.handleTypeChange}
+
                     >
-                      <MenuItem value={"Income"}>Income</MenuItem>
                       <MenuItem value={"Expense"}>Expense</MenuItem>
+                      <MenuItem value={"Income"}>Income</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -150,7 +154,7 @@ class TransactionPage extends React.Component {
                     <KeyboardDatePicker
                       margin="normal"
                       id="date-picker-dialog"
-                      label="Date picker dialog"
+                      label="Date"
                       format="MM/dd/yyyy"
                       value={this.state.selectedDate}
                       onChange={this.handleDateChange}
@@ -168,7 +172,7 @@ class TransactionPage extends React.Component {
                     onClick={() =>
                       this.handleSaveExpense(
                         {
-                          expense: this.state.expense,
+                          expense: type === "Income" ? expense : -expense,
                           date: this.state.selectedDate,
                           category: this.state.category,
                         },
@@ -176,7 +180,7 @@ class TransactionPage extends React.Component {
                       )
                     }
                   >
-                    Save expense
+                    Save
                   </Button>
                 </Grid>
               </Grid>
