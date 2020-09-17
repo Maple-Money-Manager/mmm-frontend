@@ -70,13 +70,14 @@ class TransactionPage extends React.Component {
 
   handleSaveExpense = async (item, date) => {
     try {
+      const { expense, category, selectedDate, expenseList, dateList } = this.state;
       const payload = {
-        expense: this.state.expense,
-        category: this.state.category,
-        date: this.state.selectedDate,
+        expense: expense,
+        category: category,
+        date: selectedDate,
       };
-      const newList = [...this.state.expenseList, item];
-      const newDateList = [...this.state.dateList, date];
+      const newList = [...expenseList, item];
+      const newDateList = [...dateList, date];
       this.setState({
         expenseList: newList,
         dateList: newDateList,
@@ -97,7 +98,7 @@ class TransactionPage extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { type, expense } = this.state;
+    const { type, expense, selectedDate, category, expenseList } = this.state;
     return (
       <BrowserRouter>
         <Switch>
@@ -156,7 +157,7 @@ class TransactionPage extends React.Component {
                       id="date-picker-dialog"
                       label="Date"
                       format="MM/dd/yyyy"
-                      value={this.state.selectedDate}
+                      value={selectedDate}
                       onChange={this.handleDateChange}
                       inputProps={{ "aria-label": "dateInput" }}
                       KeyboardButtonProps={{
@@ -173,10 +174,10 @@ class TransactionPage extends React.Component {
                       this.handleSaveExpense(
                         {
                           expense: type === "Income" ? expense : -expense,
-                          date: this.state.selectedDate,
-                          category: this.state.category,
+                          date: selectedDate,
+                          category: category,
                         },
-                        this.state.selectedDate
+                        selectedDate
                       )
                     }
                   >
@@ -185,7 +186,7 @@ class TransactionPage extends React.Component {
                 </Grid>
               </Grid>
               <Grid container direction="column" spacing={3}>
-                {ExpenseDetailsCard(this.state.expenseList)}
+                {ExpenseDetailsCard(expenseList)}
               </Grid>
             </Container>
           </Route>
@@ -194,7 +195,7 @@ class TransactionPage extends React.Component {
             path="/:uniqueKey"
             render={(routeProps) => (
               <ExpenseDetailsFull
-                expenseList={this.state.expenseList}
+                expenseList={expenseList}
                 {...routeProps}
               />
             )}
