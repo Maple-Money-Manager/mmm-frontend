@@ -43,7 +43,7 @@ class TransactionPage extends React.Component {
         date: record.date,
       }));
       this.setState({
-        expenseList: [...this.state.expenseList, ...expenseRecords],
+        expenseList: [...expenseRecords],
       });
     } catch (err) {
       console.log(err);
@@ -128,7 +128,6 @@ class TransactionPage extends React.Component {
                     <Select
                       value={type}
                       onChange={this.handleTypeChange}
-
                     >
                       <MenuItem value={"Expense"}>Expense</MenuItem>
                       <MenuItem value={"Income"}>Income</MenuItem>
@@ -175,7 +174,7 @@ class TransactionPage extends React.Component {
                         {
                           expense: type === "Income" ? expense : -expense,
                           date: selectedDate,
-                          category: category,
+                          category,
                         },
                         selectedDate
                       )
