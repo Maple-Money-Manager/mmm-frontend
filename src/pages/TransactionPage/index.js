@@ -12,10 +12,10 @@ import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 import ExpenseDetailsCard from "./ExpenseDetailsCard";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import ExpenseDetailsFull from "./ExpenseDetailsFull";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core/styles';
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import { withStyles } from "@material-ui/core/styles";
+import { ExpenseDetailsFull } from "./ExpenseDetailsFull";
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -70,7 +70,13 @@ class TransactionPage extends React.Component {
 
   handleSaveExpense = async (item, date) => {
     try {
-      const { expense, category, selectedDate, expenseList, dateList } = this.state;
+      const {
+        expense,
+        category,
+        selectedDate,
+        expenseList,
+        dateList,
+      } = this.state;
       const payload = {
         expense: expense,
         category: category,
@@ -92,9 +98,9 @@ class TransactionPage extends React.Component {
 
   handleTypeChange = (e) => {
     this.setState({
-      type: e.target.value
-    })
-  }
+      type: e.target.value,
+    });
+  };
 
   displayExpenseList = (expenseList) => {
     return expenseList.map((transaction, index) => {
@@ -138,13 +144,8 @@ class TransactionPage extends React.Component {
                     />
                   </FormControl>
                   <FormControl className={classes.formControl}>
-                    <InputLabel shrink>
-                      Type
-                    </InputLabel>
-                    <Select
-                      value={type}
-                      onChange={this.handleTypeChange}
-                    >
+                    <InputLabel shrink>Type</InputLabel>
+                    <Select value={type} onChange={this.handleTypeChange}>
                       <MenuItem value={"Expense"}>Expense</MenuItem>
                       <MenuItem value={"Income"}>Income</MenuItem>
                     </Select>
@@ -209,10 +210,7 @@ class TransactionPage extends React.Component {
             exact
             path="/:uniqueKey"
             render={(routeProps) => (
-              <ExpenseDetailsFull
-                expenseList={expenseList}
-                {...routeProps}
-              />
+              <ExpenseDetailsFull expenseList={expenseList} {...routeProps} />
             )}
           />
         </Switch>
@@ -221,7 +219,7 @@ class TransactionPage extends React.Component {
   }
 }
 
-const styles = theme => ({
+const styles = (theme) => ({
   formControl: {
     marginLeft: theme.spacing(1),
     minWidth: 120,
