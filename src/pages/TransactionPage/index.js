@@ -96,6 +96,22 @@ class TransactionPage extends React.Component {
     })
   }
 
+  displayExpenseList = (expenseList) => {
+    return expenseList.map((transaction, index) => {
+      const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
+      const expense = transaction.expense > 0 ? `$${transaction.expense}` : `-$${Math.abs(transaction.expense)}`
+      return (
+        <ExpenseDetailsCard
+          key={uniqueKey}
+          uniqueKey={uniqueKey}
+          expense={expense}
+          date={transaction.date}
+          category={transaction.category}
+        />
+      )
+    })
+  }
+
   render() {
     const { classes } = this.props;
     const { type, expense, selectedDate, category, expenseList } = this.state;
@@ -185,7 +201,7 @@ class TransactionPage extends React.Component {
                 </Grid>
               </Grid>
               <Grid container direction="column" spacing={3}>
-                {ExpenseDetailsCard(expenseList)}
+                {this.displayExpenseList(expenseList)}
               </Grid>
             </Container>
           </Route>
