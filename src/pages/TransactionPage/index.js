@@ -99,7 +99,7 @@ class TransactionPage extends React.Component {
   displayExpenseList = (expenseList) => {
     return expenseList.map((transaction, index) => {
       const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
-      const expense = transaction.expense > 0 ? `$${transaction.expense}` : `-$${Math.abs(transaction.expense)}`
+      const expense = transaction.expense >= 0 ? `$${transaction.expense}` : `-$${Math.abs(transaction.expense)}`
       return (
         <ExpenseDetailsCard
           key={uniqueKey}
