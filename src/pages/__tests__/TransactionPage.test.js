@@ -13,9 +13,9 @@ afterEach(() => {
 });
 
 describe("Transaction Page", () => {
-  it("should render the Expense log input label", () => {
+  it("should render the Amount input label", () => {
     const { getByText } = render(<TransactionPage />);
-    const expenseLog = getByText("Expense Log");
+    const expenseLog = getByText("Amount");
     expect(expenseLog).toBeInTheDocument();
   });
   it("should render the Expense form control", () => {
@@ -33,32 +33,30 @@ describe("Transaction Page", () => {
     const datePicker = getByLabelText("change date");
     expect(datePicker).toBeInTheDocument();
   });
-  it("should render the Save expense button", () => {
+  it("should render the Save button", () => {
     const { getByText } = render(<TransactionPage />);
-    const expenseButton = getByText("Save expense");
+    const expenseButton = getByText("Save");
     expect(expenseButton).toBeInTheDocument();
   });
-  it("should render details of expenses after save expense button is clicked", async () => {
+  it("should render negative amount as default and other details for the transaction details after save button is clicked", () => {
     const { getByLabelText, getByText, getAllByTestId } = render(
       <TransactionPage />
     );
     const expenseFormControl = getByLabelText("expenseInput");
     const categoryFormControl = getByLabelText("categoryInput");
     const datePicker = getByLabelText("dateInput");
-    userEvent.type(expenseFormControl, "100");
-    userEvent.type(categoryFormControl, "Hello");
+    userEvent.type(expenseFormControl, "200");
+    userEvent.type(categoryFormControl, "Drinks");
     userEvent.type(datePicker, "01/13/2020");
-    const expenseButton = getByText("Save expense");
+    const expenseButton = getByText("Save");
     userEvent.click(expenseButton);
-    axios.post.mockResolvedValueOnce({ data: [] });
-    await waitFor(() => {
-      const expenseList = getAllByTestId("expense-list").map(
-        (item) => item.textContent
-      );
-      expect(expenseList[0]).toMatch(
-        "Category: Hello Amount: $100 Date: 13/01/2020, 12:00:00 am "
-      )
-    });
+    const expenseList = getAllByTestId("expense-list").map(
+      (item) => item.textContent
+    );
+    console.log(">>><<<", expenseList)
+    expect(expenseList[0]).toMatch(
+      "Category: Drinks Amount: -$200 Date: 13/01/2020, 12:00:00 am "
+    )
   });
   it("should render list of saved items that are fetched", async () => {
     const { getAllByTestId } = render(
