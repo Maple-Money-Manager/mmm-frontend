@@ -11,6 +11,9 @@ import {
   Button,
   OutlinedInput,
   InputAdornment,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { Save as SaveIcon, Delete as DeleteIcon } from "@material-ui/icons";
@@ -24,11 +27,18 @@ import DateFnsUtils from "@date-io/date-fns";
 
 export const ExpenseDetailsFull = ({ expenseList }) => {
   const [editState, setEditState] = React.useState(false);
+  const [expenseValue, setExpenseValue] = React.useState(undefined);
+  const [categoryValue, setCategoryValue] = React.useState(undefined);
+  const [dateValue, setDateValue] = React.useState(undefined);
+  const [typeValue, setTypeValue] = React.useState("Income");
+
   let { uniqueKey } = useParams();
   const position = uniqueKey.charAt(uniqueKey.length - 1);
   if (uniqueKey.length < 0) {
     return <Grid />;
   }
+  const type = expenseList[position].expense > 0 ? "Income" : "Expense";
+
   return (
     <Grid>
       <Card variant="outlined">
@@ -45,22 +55,16 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
               component="p"
             >
               Category: {expenseList[position].category} <br />
-              Amount: ${expenseList[position].expense} <br />
+              Amount:{" "}
+              {expenseList[position].expense > 0
+                ? `$${expenseList[position].expense}`
+                : `-$${Math.abs(expenseList[position].expense)}`}
+              <br />
               Date: {expenseList[position].date.toLocaleString()} <br />
             </Typography>
           )}
           {editState && (
             <Grid container direction="column">
-              <Grid item>
-                <FormControl variant="outlined">
-                  <OutlinedInput
-                    type="text"
-                    id="edit-category-field"
-                    inputProps={{ "aria-label": "editCategoryInput" }}
-                    defaultValue={expenseList[position].category}
-                  />
-                </FormControl>
-              </Grid>
               <Grid item>
                 <FormControl variant="outlined">
                   <OutlinedInput
@@ -70,10 +74,33 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
                     startAdornment={
                       <InputAdornment position="start">$</InputAdornment>
                     }
-                    defaultValue={expenseList[position].expense}
+                    defaultValue={Math.abs(expenseList[position].expense)}
+                    onChange={(e) => setExpenseValue(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl variant="outlined">
+                  <InputLabel shrink>Type</InputLabel>
+                  <Select
+                    value={type}
+                    onChange={(e) => setTypeValue(e.target.value)}
+                  >
+                    <MenuItem value={"Expense"}>Expense</MenuItem>
+                    <MenuItem value={"Income"}>Income</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item>
+                <FormControl variant="outlined">
+                  <OutlinedInput
+                    type="text"
+                    id="edit-category-field"
+                    inputProps={{ "aria-label": "editCategoryInput" }}
+                    defaultValue={expenseList[position].category}
+                    onChange={(e) => setCategoryValue(e.target.value)}
                   />
                 </FormControl>
               </Grid>
+
               <Grid container item>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                   <KeyboardDatePicker
@@ -85,6 +112,7 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
                     KeyboardButtonProps={{
                       "aria-label": "change date",
                     }}
+                    onChange={(e) => setDateValue(e.target.value)}
                   />
                 </MuiPickersUtilsProvider>
               </Grid>
@@ -98,7 +126,12 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
             </IconButton>
           )}
           {editState && (
-            <IconButton onClick={() => setEditState(false)}>
+            <IconButton
+              onClick={() => {
+                setEditState(false);
+                console.log('update');
+              }}
+            >
               <SaveIcon />
             </IconButton>
           )}
