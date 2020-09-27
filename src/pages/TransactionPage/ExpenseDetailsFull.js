@@ -24,6 +24,7 @@ import {
 } from "@material-ui/pickers";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
+import Axios from "axios";
 
 export const ExpenseDetailsFull = ({ expenseList }) => {
   const [editState, setEditState] = React.useState(false);
@@ -38,6 +39,22 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
     return <Grid />;
   }
   const type = expenseList[position].expense > 0 ? "Income" : "Expense";
+
+  const updateRecord = async (item, date) => {
+    try {
+      const payload = {
+        id: item.id,
+        expense: item.expense,
+        category: item.category,
+        date: item.date,
+      };
+      await Axios.patch(`http://localhost:3000/records/update_record`, payload);
+    } catch (error) {
+      if (error.response.status === 400) {
+        alert("Unable to update transaction.");
+      }
+    }
+  };
 
   return (
     <Grid>
@@ -128,8 +145,13 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
           {editState && (
             <IconButton
               onClick={() => {
+                updateRecord({
+                  id: position,
+                  expense: expenseValue,
+                  category: categoryValue,
+                  date: dateValue,
+                });
                 setEditState(false);
-                console.log('update');
               }}
             >
               <SaveIcon />
