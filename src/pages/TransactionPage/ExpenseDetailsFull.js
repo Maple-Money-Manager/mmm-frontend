@@ -27,18 +27,20 @@ import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 
 export const ExpenseDetailsFull = ({ expenseList }) => {
-  const [editState, setEditState] = React.useState(false);
-  const [expenseValue, setExpenseValue] = React.useState(undefined);
-  const [categoryValue, setCategoryValue] = React.useState(undefined);
-  const [dateValue, setDateValue] = React.useState(undefined);
-  const [typeValue, setTypeValue] = React.useState("Income");
-
-  let { uniqueKey } = useParams();
+  const { uniqueKey } = useParams();
   const position = uniqueKey.charAt(uniqueKey.length - 1);
-  if (uniqueKey.length < 0) {
-    return <Grid />;
-  }
-  const type = expenseList[position].expense > 0 ? "Income" : "Expense";
+  const [editState, setEditState] = React.useState(false);
+  const [expenseValue, setExpenseValue] = React.useState(
+    expenseList[position].expense
+  );
+  const [categoryValue, setCategoryValue] = React.useState(
+    expenseList[position].category
+  );
+  const [dateValue, setDateValue] = React.useState(expenseList[position].date);
+  const [typeValue, setTypeValue] = React.useState(
+    expenseList[position].expense > 0 ? "Income" : "Expense"
+  );
+  const idValue = position;
 
   const updateRecord = async (item, date) => {
     try {
@@ -56,12 +58,30 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
     }
   };
 
+  function updateFrontend() {
+    return (
+      <div>
+        Category: {categoryValue} <br />
+        Amount:{" "}
+        {typeValue === "Income"
+          ? `$${expenseValue}`
+          : `-$${Math.abs(expenseValue)}`}
+        <br />
+        Date: {dateValue.toLocaleString()} <br />
+      </div>
+    );
+  }
+
+  if (uniqueKey.length < 0) {
+    return <Grid />;
+  }
+
   return (
     <Grid>
       <Card variant="outlined">
         <CardHeader
           title="Transaction Details"
-          subheader={expenseList[position].date.toLocaleString()}
+          subheader={dateValue.toLocaleString()}
         />
         <CardContent>
           {!editState && (
@@ -71,13 +91,7 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
               color="textSecondary"
               component="p"
             >
-              Category: {expenseList[position].category} <br />
-              Amount:{" "}
-              {expenseList[position].expense > 0
-                ? `$${expenseList[position].expense}`
-                : `-$${Math.abs(expenseList[position].expense)}`}
-              <br />
-              Date: {expenseList[position].date.toLocaleString()} <br />
+              {updateFrontend()}
             </Typography>
           )}
           {editState && (
@@ -91,14 +105,14 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
                     startAdornment={
                       <InputAdornment position="start">$</InputAdornment>
                     }
-                    defaultValue={Math.abs(expenseList[position].expense)}
+                    defaultValue={Math.abs(expenseValue)}
                     onChange={(e) => setExpenseValue(e.target.value)}
                   />
                 </FormControl>
                 <FormControl variant="outlined">
                   <InputLabel shrink>Type</InputLabel>
                   <Select
-                    value={type}
+                    value={typeValue}
                     onChange={(e) => setTypeValue(e.target.value)}
                   >
                     <MenuItem value={"Expense"}>Expense</MenuItem>
@@ -112,7 +126,7 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
                     type="text"
                     id="edit-category-field"
                     inputProps={{ "aria-label": "editCategoryInput" }}
-                    defaultValue={expenseList[position].category}
+                    defaultValue={categoryValue}
                     onChange={(e) => setCategoryValue(e.target.value)}
                   />
                 </FormControl>
@@ -146,8 +160,9 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
             <IconButton
               onClick={() => {
                 updateRecord({
-                  id: position,
-                  expense: expenseValue,
+                  id: idValue,
+                  expense:
+                    typeValue === "Income" ? expenseValue : -expenseValue,
                   category: categoryValue,
                   date: dateValue,
                 });
