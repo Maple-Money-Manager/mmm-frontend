@@ -64,7 +64,7 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
         Category: {categoryValue} <br />
         Amount:{" "}
         {typeValue === "Income"
-          ? `$${expenseValue}`
+          ? `$${Math.abs(expenseValue)}`
           : `-$${Math.abs(expenseValue)}`}
         <br />
         Date: {dateValue.toLocaleString()} <br />
@@ -162,7 +162,9 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
                 updateRecord({
                   id: idValue,
                   expense:
-                    typeValue === "Income" ? expenseValue : -expenseValue,
+                    typeValue === "Income"
+                      ? Math.abs(expenseValue)
+                      : -Math.abs(expenseValue),
                   category: categoryValue,
                   date: dateValue,
                 });

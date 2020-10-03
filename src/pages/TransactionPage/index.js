@@ -34,6 +34,10 @@ class TransactionPage extends React.Component {
     this.getExpenseRecords();
   }
 
+  componentDidUpdate() {
+    this.getExpenseRecords();
+  }
+
   getExpenseRecords = async () => {
     try {
       const res = await Axios.get(`http://localhost:3000/records/get_records`);
