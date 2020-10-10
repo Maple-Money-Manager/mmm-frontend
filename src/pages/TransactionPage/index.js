@@ -96,8 +96,8 @@ class TransactionPage extends React.Component {
     })
   }
 
-  displayExpenseList = (expenseList) => {
-    return expenseList.map((transaction, index) => {
+  displayTransactionList = (transactionList) => {
+    return transactionList.map((transaction, index) => {
       const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
       const expense = transaction.expense >= 0 ? `$${transaction.expense}` : `-$${Math.abs(transaction.expense)}`
       return (
@@ -144,6 +144,7 @@ class TransactionPage extends React.Component {
                     <Select
                       value={type}
                       onChange={this.handleTypeChange}
+                      inputProps={{ "aria-label": "transactionType" }}
                     >
                       <MenuItem value={"Expense"}>Expense</MenuItem>
                       <MenuItem value={"Income"}>Income</MenuItem>
@@ -201,7 +202,7 @@ class TransactionPage extends React.Component {
                 </Grid>
               </Grid>
               <Grid container direction="column" spacing={3}>
-                {this.displayExpenseList(expenseList)}
+                {this.displayTransactionList(expenseList)}
               </Grid>
             </Container>
           </Route>
