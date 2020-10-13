@@ -50,10 +50,7 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
         category: item.category,
         date: item.date,
       };
-      await Axios.patch(
-        `http://localhost:3000/records/update_records`,
-        payload
-      );
+      await Axios.patch("http://localhost:3000/records/:uniqueKey", payload);
     } catch (error) {
       if (error.response.status === 400) {
         alert("Unable to update transaction.");
