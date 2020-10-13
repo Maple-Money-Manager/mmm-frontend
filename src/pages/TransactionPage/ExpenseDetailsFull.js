@@ -40,9 +40,9 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
   const [typeValue, setTypeValue] = React.useState(
     expenseList[position].expense > 0 ? "Income" : "Expense"
   );
-  const idValue = position;
+  const idValue = parseInt(position) + 1;
 
-  const updateRecord = async (item, date) => {
+  const updateRecord = async (item) => {
     try {
       const payload = {
         id: item.id,
@@ -50,7 +50,10 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
         category: item.category,
         date: item.date,
       };
-      await Axios.patch(`http://localhost:3000/records/update_record`, payload);
+      await Axios.patch(
+        `http://localhost:3000/records/update_records`,
+        payload
+      );
     } catch (error) {
       if (error.response.status === 400) {
         alert("Unable to update transaction.");
@@ -89,8 +92,7 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
               data-testid="expense-list"
               variant="body2"
               color="textSecondary"
-              component="p"
-            >
+              component="p">
               {updateFrontend()}
             </Typography>
           )}
@@ -113,8 +115,7 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
                   <InputLabel shrink>Type</InputLabel>
                   <Select
                     value={typeValue}
-                    onChange={(e) => setTypeValue(e.target.value)}
-                  >
+                    onChange={(e) => setTypeValue(e.target.value)}>
                     <MenuItem value={"Expense"}>Expense</MenuItem>
                     <MenuItem value={"Income"}>Income</MenuItem>
                   </Select>
@@ -169,8 +170,7 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
                   date: dateValue,
                 });
                 setEditState(false);
-              }}
-            >
+              }}>
               <SaveIcon />
             </IconButton>
           )}
