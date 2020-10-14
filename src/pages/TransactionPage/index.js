@@ -19,8 +19,8 @@ import { ExpenseDetailsFull } from "./ExpenseDetailsFull";
 
 const TransactionPage = (props) => {
   const { classes } = props;
-  const [expense, setExpense] = React.useState(0);
-  const [expenseList, setExpenseList] = React.useState([]);
+  const [expense, setExpense] = React.useState(undefined);
+  const [transactionList, setTransactionList] = React.useState([]);
   const [category, setCategory] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [dateList, setDateList] = React.useState([]);
@@ -29,19 +29,19 @@ const TransactionPage = (props) => {
 
   //call when update bool is true
   React.useEffect(() => {
-    getExpenseRecords();
+    getTransactionRecords();
     setToUpdate(false);
   }, [toUpdate]);
 
-  const getExpenseRecords = async () => {
+  const getTransactionRecords = async () => {
     try {
       const res = await Axios.get(`http://localhost:3000/records/get_records`);
-      const expenseRecords = res.data.map((record) => ({
+      const transactionRecords = res.data.map((record) => ({
         expense: record.expense,
         category: record.category,
         date: record.date,
       }));
-      setExpenseList([...expenseRecords]);
+      setTransactionList([...transactionRecords]);
     } catch (err) {
       console.log(err);
     }
@@ -66,9 +66,9 @@ const TransactionPage = (props) => {
         category: category,
         date: selectedDate,
       };
-      const newList = [...expenseList, item];
+      const newList = [...transactionList, item];
       const newDateList = [...dateList, date];
-      setExpenseList(newList);
+      setTransactionList(newList);
       setDateList(newDateList);
       await Axios.post(`http://localhost:3000/records/save_record`, payload);
     } catch (error) {
@@ -86,8 +86,8 @@ const TransactionPage = (props) => {
     setToUpdate(true);
   }
 
-  const displayExpenseList = (expenseList) => {
-    return expenseList.map((transaction, index) => {
+  const displayTransactionList = (transactionList) => {
+    return transactionList.map((transaction, index) => {
       const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
       const expense =
         transaction.expense >= 0
@@ -126,8 +126,14 @@ const TransactionPage = (props) => {
                   />
                 </FormControl>
                 <FormControl className={classes.formControl}>
-                  <InputLabel shrink>Type</InputLabel>
-                  <Select value={type} onChange={handleTypeChange}>
+                  <InputLabel shrink label="transactionType">
+                    Type
+                  </InputLabel>
+                  <Select
+                    value={type}
+                    onChange={handleTypeChange}
+                    defaultValue="Expense"
+                    inputProps={{ "aria-label": "transactionType" }}>
                     <MenuItem value={"Expense"}>Expense</MenuItem>
                     <MenuItem value={"Income"}>Income</MenuItem>
                   </Select>
@@ -143,6 +149,7 @@ const TransactionPage = (props) => {
                     startAdornment={
                       <InputAdornment position="start">Category</InputAdornment>
                     }
+                    defaultValue={""}
                   />
                 </FormControl>
               </Grid>
@@ -166,7 +173,7 @@ const TransactionPage = (props) => {
                 <Button
                   variant="outlined"
                   color="primary"
-                  onClick={() =>
+                  onClick={() => {
                     handleSaveExpense(
                       {
                         expense: type === "Income" ? expense : -expense,
@@ -174,14 +181,14 @@ const TransactionPage = (props) => {
                         category,
                       },
                       selectedDate
-                    )
-                  }>
+                    );
+                  }}>
                   Save
                 </Button>
               </Grid>
             </Grid>
             <Grid container direction="column" spacing={3}>
-              {displayExpenseList(expenseList)}
+              {displayTransactionList(transactionList)}
             </Grid>
           </Container>
         </Route>
@@ -189,7 +196,11 @@ const TransactionPage = (props) => {
           exact
           path="/:uniqueKey"
           render={(routeProps) => (
-            <ExpenseDetailsFull expenseList={expenseList} {...routeProps} triggerCallback={() => triggerCallback()} />
+            <ExpenseDetailsFull
+              expenseList={transactionList}
+              {...routeProps}
+              triggerCallback={() => triggerCallback()}
+            />
           )}
         />
       </Switch>
