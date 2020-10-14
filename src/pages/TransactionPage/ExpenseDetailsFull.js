@@ -26,7 +26,7 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 
-export const ExpenseDetailsFull = ({ expenseList }) => {
+export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
   const { uniqueKey } = useParams();
   const position = uniqueKey.charAt(uniqueKey.length - 1);
   const [editState, setEditState] = React.useState(false);
@@ -51,6 +51,7 @@ export const ExpenseDetailsFull = ({ expenseList }) => {
         date: item.date,
       };
       await Axios.patch("http://localhost:3000/records/:uniqueKey", payload);
+      triggerCallback();
     } catch (error) {
       if (error.response.status === 400) {
         alert("Unable to update transaction.");
