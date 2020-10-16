@@ -142,7 +142,8 @@ export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
                     KeyboardButtonProps={{
                       "aria-label": "change date",
                     }}
-                    onChange={(e) => setDateValue(e.target.value)}
+                    onChange={(date) => setDateValue(date)}
+                    value={dateValue}
                   />
                 </MuiPickersUtilsProvider>
               </Grid>
