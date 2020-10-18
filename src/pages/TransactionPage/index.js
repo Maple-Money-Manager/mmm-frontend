@@ -47,18 +47,6 @@ const TransactionPage = (props) => {
     }
   };
 
-  const handleExpenseChange = (e) => {
-    setExpense(e.target.value);
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
-  };
-
   const handleSaveExpense = async (item, date) => {
     try {
       const payload = {
@@ -76,10 +64,6 @@ const TransactionPage = (props) => {
         alert("Missing information. Fill all necessary details.");
       }
     }
-  };
-
-  const handleTypeChange = (e) => {
-    setType(e.target.value);
   };
 
   function triggerCallback() {
@@ -119,7 +103,7 @@ const TransactionPage = (props) => {
                     type="number"
                     id="outlined-adornment-amount"
                     inputProps={{ "aria-label": "expenseInput" }}
-                    onChange={handleExpenseChange}
+                    onChange={(e) => setExpense(e.target.value)}
                     startAdornment={
                       <InputAdornment position="start">$</InputAdornment>
                     }
@@ -131,7 +115,7 @@ const TransactionPage = (props) => {
                   </InputLabel>
                   <Select
                     value={type}
-                    onChange={handleTypeChange}
+                    onChange={(e) => setType(e.target.value)}
                     defaultValue="Expense"
                     inputProps={{ "aria-label": "transactionType" }}>
                     <MenuItem value={"Expense"}>Expense</MenuItem>
@@ -145,7 +129,7 @@ const TransactionPage = (props) => {
                     type="text"
                     id="outlined-adornment-category"
                     inputProps={{ "aria-label": "categoryInput" }}
-                    onChange={handleCategoryChange}
+                    onChange={(e) => setCategory(e.target.value)}
                     startAdornment={
                       <InputAdornment position="start">Category</InputAdornment>
                     }
@@ -161,7 +145,7 @@ const TransactionPage = (props) => {
                     label="Date"
                     format="MM/dd/yyyy"
                     value={selectedDate}
-                    onChange={handleDateChange}
+                    onChange={(date) => setSelectedDate(date)}
                     inputProps={{ "aria-label": "dateInput" }}
                     KeyboardButtonProps={{
                       "aria-label": "change date",
