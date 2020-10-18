@@ -13,84 +13,84 @@ afterEach(() => {
 });
 
 describe("Transaction Page", () => {
-  it("should render the Amount input label", () => {
-    const { getByText } = render(<TransactionPage />);
-    const expenseLog = getByText("Amount");
+  it("should render the Amount input label", async () => {
+    const { findByText } = render(<TransactionPage />);
+    const expenseLog = await findByText("Amount");
     expect(expenseLog).toBeInTheDocument();
   });
-  it("should render the Expense form control", () => {
-    const { getByLabelText } = render(<TransactionPage />);
-    const expenseFormControl = getByLabelText("expenseInput");
+  it("should render the Expense form control", async () => {
+    const { findByLabelText } = render(<TransactionPage />);
+    const expenseFormControl = await findByLabelText("expenseInput");
     expect(expenseFormControl).toBeInTheDocument();
   });
-  it("should render the Category form control", () => {
-    const { getByLabelText } = render(<TransactionPage />);
-    const categoryFormControl = getByLabelText("categoryInput");
+  it("should render the Category form control", async () => {
+    const { findByLabelText } = render(<TransactionPage />);
+    const categoryFormControl = await findByLabelText("categoryInput");
     expect(categoryFormControl).toBeInTheDocument();
   });
-  it("should render the Date picker", () => {
-    const { getByLabelText } = render(<TransactionPage />);
-    const datePicker = getByLabelText("change date");
+  it("should render the Date picker", async () => {
+    const { findByLabelText } = render(<TransactionPage />);
+    const datePicker = await findByLabelText("change date");
     expect(datePicker).toBeInTheDocument();
   });
-  it("should render the Save button", () => {
-    const { getByText } = render(<TransactionPage />);
-    const expenseButton = getByText("Save");
+  it("should render the Save button", async () => {
+    const { findByText } = render(<TransactionPage />);
+    const expenseButton = await findByText("Save");
     expect(expenseButton).toBeInTheDocument();
   });
-  it("should render negative amount as default and other details for the transaction details after save button is clicked", () => {
-    const { getByLabelText, getByText, getAllByTestId } = render(
+  it("should render negative amount as default and other details for the transaction details after save button is clicked", async () => {
+    const { findByLabelText, findByText, findAllByTestId } = render(
       <TransactionPage />
     );
-    const expenseFormControl = getByLabelText("expenseInput");
-    const categoryFormControl = getByLabelText("categoryInput");
-    const datePicker = getByLabelText("dateInput");
+    const expenseFormControl = await findByLabelText("expenseInput");
+    const categoryFormControl = await findByLabelText("categoryInput");
+    const datePicker = await findByLabelText("dateInput");
     userEvent.type(expenseFormControl, "200");
     userEvent.type(categoryFormControl, "Drinks");
     userEvent.type(datePicker, "01/13/2020");
-    const expenseButton = getByText("Save");
+    const expenseButton = await findByText("Save");
     userEvent.click(expenseButton);
-    const expenseList = getAllByTestId("expense-list").map(
+    const list = await findAllByTestId("expense-list");
+    const expenseList = list.map(
       (item) => item.textContent
     );
-
-    expect(expenseList[0]).toMatch(
+    expect(expenseList[1]).toMatch(
       "Category: Drinks Amount: -$200 Date: January 13, 2020 12:00 AM "
     )
   });
-  it("should render postive amount when income is selected", () => {
-    const { getByLabelText, getByText, getAllByTestId, getByRole } = render(
+  it("should render postive amount when income is selected", async () => {
+    const { findByLabelText, findByText, findAllByTestId, findByRole } = render(
       <TransactionPage />
     );
-    fireEvent.mouseDown(getByLabelText("transactionType"));
-    const listbox = within(getByRole('listbox'));
-    fireEvent.click(listbox.getByText(/Income/i));
-    const expenseFormControl = getByLabelText("expenseInput");
-    const categoryFormControl = getByLabelText("categoryInput");
-    const datePicker = getByLabelText("dateInput");
+    fireEvent.mouseDown(await findByLabelText("transactionType"));
+    const listbox = within(await findByRole('listbox'));
+    fireEvent.click(await listbox.findByText(/Income/i));
+    const expenseFormControl = await findByLabelText("expenseInput");
+    const categoryFormControl = await findByLabelText("categoryInput");
+    const datePicker = await findByLabelText("dateInput");
     userEvent.type(expenseFormControl, "200");
     userEvent.type(categoryFormControl, "Drinks");
     userEvent.type(datePicker, "01/13/2020");
-    const expenseButton = getByText("Save");
+    const expenseButton = await findByText("Save");
     userEvent.click(expenseButton);
-    const expenseList = getAllByTestId("expense-list").map(
+    const list = await findAllByTestId("expense-list");
+    const expenseList = list.map(
       (item) => item.textContent
     );
-    expect(expenseList[0]).toMatch(
+    expect(expenseList[1]).toMatch(
       "Category: Drinks Amount: $200 Date: January 13, 2020 12:00 AM "
     )
   });
   it("should render list of saved items that are fetched", async () => {
-    const { getAllByTestId } = render(
+    const { findAllByTestId } = render(
       <TransactionPage />
     );
-    await waitFor(() => {
-      const expenseList = (getAllByTestId("expense-list").map(
-        (item) => item.textContent
-      ))
-      expect(expenseList[0]).toMatch(
-        "Category: test Amount: $100 Date: November 12, 1991 12:00 AM"
-      );
-    })
+    const list = await findAllByTestId("expense-list");
+    const expenseList = list.map(
+      (item) => item.textContent
+    );
+    expect(expenseList[0]).toMatch(
+      "Category: test Amount: $100 Date: November 12, 1991 12:00 AM"
+    );
   })
 });
