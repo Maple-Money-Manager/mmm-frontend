@@ -8,14 +8,15 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import "date-fns";
+import moment from "moment";
 import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 import ExpenseDetailsCard from "./ExpenseDetailsCard";
 import { BrowserRouter, Route, RouteProps, Switch } from "react-router-dom";
 import ExpenseDetailsFull from "./ExpenseDetailsFull";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core/styles';
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import { withStyles } from "@material-ui/core/styles";
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class TransactionPage extends React.Component {
       const expenseRecords = res.data.map((record) => ({
         expense: record.expense,
         category: record.category,
-        date: record.date,
+        date: moment(record.date).format("LLL"),
       }));
       this.setState({
         expenseList: [...expenseRecords],
@@ -70,7 +71,13 @@ class TransactionPage extends React.Component {
 
   handleSaveExpense = async (item, date) => {
     try {
-      const { expense, category, selectedDate, expenseList, dateList } = this.state;
+      const {
+        expense,
+        category,
+        selectedDate,
+        expenseList,
+        dateList,
+      } = this.state;
       const payload = {
         expense: expense,
         category: category,
@@ -92,14 +99,17 @@ class TransactionPage extends React.Component {
 
   handleTypeChange = (e) => {
     this.setState({
-      type: e.target.value
-    })
-  }
+      type: e.target.value,
+    });
+  };
 
   displayTransactionList = (transactionList) => {
     return transactionList.map((transaction, index) => {
       const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
-      const expense = transaction.expense >= 0 ? `$${transaction.expense}` : `-$${Math.abs(transaction.expense)}`
+      const expense =
+        transaction.expense >= 0
+          ? `$${transaction.expense}`
+          : `-$${Math.abs(transaction.expense)}`;
       return (
         <ExpenseDetailsCard
           key={uniqueKey}
@@ -108,9 +118,9 @@ class TransactionPage extends React.Component {
           date={transaction.date}
           category={transaction.category}
         />
-      )
-    })
-  }
+      );
+    });
+  };
 
   render() {
     const { classes } = this.props;
@@ -138,9 +148,7 @@ class TransactionPage extends React.Component {
                     />
                   </FormControl>
                   <FormControl className={classes.formControl}>
-                    <InputLabel shrink>
-                      Type
-                    </InputLabel>
+                    <InputLabel shrink>Type</InputLabel>
                     <Select
                       value={type}
                       onChange={this.handleTypeChange}
@@ -210,10 +218,7 @@ class TransactionPage extends React.Component {
             exact
             path="/:uniqueKey"
             render={(routeProps) => (
-              <ExpenseDetailsFull
-                expenseList={expenseList}
-                {...routeProps}
-              />
+              <ExpenseDetailsFull expenseList={expenseList} {...routeProps} />
             )}
           />
         </Switch>
@@ -222,7 +227,7 @@ class TransactionPage extends React.Component {
   }
 }
 
-const styles = theme => ({
+const styles = (theme) => ({
   formControl: {
     marginLeft: theme.spacing(1),
     minWidth: 120,

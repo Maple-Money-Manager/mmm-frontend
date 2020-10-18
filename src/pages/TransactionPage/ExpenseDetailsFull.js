@@ -7,6 +7,7 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
+import moment from "moment";
 import { useParams, Link } from "react-router-dom";
 
 export default function ExpenseDetailsFull({ expenseList }) {
@@ -21,7 +22,7 @@ export default function ExpenseDetailsFull({ expenseList }) {
         <Card variant="outlined">
           <CardHeader
             title="Transaction Details"
-            subheader={expenseList[position].date.toLocaleString()}
+            subheader={moment(expenseList[position].date).format("LLL")}
           />
           <CardContent>
             <Typography
@@ -32,7 +33,7 @@ export default function ExpenseDetailsFull({ expenseList }) {
             >
               Category: {expenseList[position].category} <br />
               Amount: ${expenseList[position].expense} <br />
-              Date: {expenseList[position].date.toLocaleString()} <br />
+              Date: {moment(expenseList[position].date).format("LLL")} <br />
             </Typography>
           </CardContent>
         </Card>

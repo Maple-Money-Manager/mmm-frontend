@@ -7,16 +7,22 @@ import {
   CardHeader,
   Typography,
 } from "@material-ui/core";
+import moment from "moment";
 import { Link } from "react-router-dom";
 
-export default function ExpenseDetailsCard({ uniqueKey, expense, date, category }) {
+export default function ExpenseDetailsCard({
+  uniqueKey,
+  expense,
+  date,
+  category,
+}) {
   return (
     <Grid item key={uniqueKey}>
       <Card variant="outlined">
         <CardActionArea component={Link} to={`/${uniqueKey}`}>
           <CardHeader
             title="Transaction Details"
-            subheader={date.toLocaleString()}
+            subheader={moment(date).format("LLL")}
           />
           <CardContent>
             <Typography
@@ -26,8 +32,8 @@ export default function ExpenseDetailsCard({ uniqueKey, expense, date, category 
               component="p"
             >
               Category: {category} <br />
-                Amount: {expense} <br />
-                Date: {date.toLocaleString()} <br />
+              Amount: {expense} <br />
+              Date: {moment(date).format("LLL")} <br />
             </Typography>
           </CardContent>
         </CardActionArea>
