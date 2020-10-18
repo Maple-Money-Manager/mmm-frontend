@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, waitFor, within } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import TransactionPage from "../../pages/TransactionPage";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
@@ -53,30 +53,9 @@ describe("Transaction Page", () => {
     const expenseList = getAllByTestId("expense-list").map(
       (item) => item.textContent
     );
+    console.log(">>><<<", expenseList)
     expect(expenseList[0]).toMatch(
       "Category: Drinks Amount: -$200 Date: 13/01/2020, 12:00:00 am "
-    )
-  });
-  it.only("should render postive amount when income is selected", () => {
-    const { getByLabelText, getByText, getAllByTestId, getByRole } = render(
-      <TransactionPage />
-    );
-    fireEvent.mouseDown(getByLabelText("transactionType"));
-    const listbox = within(getByRole('listbox'));
-    fireEvent.click(listbox.getByText(/Income/i));
-    const expenseFormControl = getByLabelText("expenseInput");
-    const categoryFormControl = getByLabelText("categoryInput");
-    const datePicker = getByLabelText("dateInput");
-    userEvent.type(expenseFormControl, "200");
-    userEvent.type(categoryFormControl, "Drinks");
-    userEvent.type(datePicker, "01/13/2020");
-    const expenseButton = getByText("Save");
-    userEvent.click(expenseButton);
-    const expenseList = getAllByTestId("expense-list").map(
-      (item) => item.textContent
-    );
-    expect(expenseList[0]).toMatch(
-      "Category: Drinks Amount: $200 Date: 13/01/2020, 12:00:00 am "
     )
   });
   it("should render list of saved items that are fetched", async () => {

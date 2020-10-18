@@ -12,83 +12,53 @@ import moment from "moment";
 import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 import ExpenseDetailsCard from "./ExpenseDetailsCard";
-import { BrowserRouter, Route, RouteProps, Switch } from "react-router-dom";
-import ExpenseDetailsFull from "./ExpenseDetailsFull";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
+import { ExpenseDetailsFull } from "./ExpenseDetailsFull";
 
-class TransactionPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      expense: 0,
-      expenseList: [],
-      category: "",
-      selectedDate: new Date(),
-      dateList: [],
-      type: "Expense",
-    };
-  }
+const TransactionPage = (props) => {
+  const { classes } = props;
+  const [expense, setExpense] = React.useState(undefined);
+  const [transactionList, setTransactionList] = React.useState([]);
+  const [category, setCategory] = React.useState("");
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [dateList, setDateList] = React.useState([]);
+  const [type, setType] = React.useState("Expense");
+  const [toUpdate, setToUpdate] = React.useState(false);
 
-  componentDidMount() {
-    this.getExpenseRecords();
-  }
+  //call when update bool is true
+  React.useEffect(() => {
+    getTransactionRecords();
+    setToUpdate(false);
+  }, [toUpdate]);
 
-  getExpenseRecords = async () => {
+  const getTransactionRecords = async () => {
     try {
       const res = await Axios.get(`http://localhost:3000/records/get_records`);
-      const expenseRecords = res.data.map((record) => ({
+      const transactionRecords = res.data.map((record) => ({
         expense: record.expense,
         category: record.category,
         date: moment(record.date).format("LLL"),
       }));
-      this.setState({
-        expenseList: [...expenseRecords],
-      });
+      setTransactionList([...transactionRecords]);
     } catch (err) {
       console.log(err);
     }
   };
 
-  handleExpenseChange = (e) => {
-    this.setState({
-      expense: e.target.value,
-    });
-  };
-
-  handleDateChange = (date) => {
-    this.setState({
-      selectedDate: date,
-    });
-  };
-
-  handleCategoryChange = (e) => {
-    this.setState({
-      category: e.target.value,
-    });
-  };
-
-  handleSaveExpense = async (item, date) => {
+  const handleSaveExpense = async (item, date) => {
     try {
-      const {
-        expense,
-        category,
-        selectedDate,
-        expenseList,
-        dateList,
-      } = this.state;
       const payload = {
         expense: expense,
         category: category,
         date: selectedDate,
       };
-      const newList = [...expenseList, item];
+      const newList = [...transactionList, item];
       const newDateList = [...dateList, date];
-      this.setState({
-        expenseList: newList,
-        dateList: newDateList,
-      });
+      setTransactionList(newList);
+      setDateList(newDateList);
       await Axios.post(`http://localhost:3000/records/save_record`, payload);
     } catch (error) {
       if (error.response.status === 400) {
@@ -97,13 +67,11 @@ class TransactionPage extends React.Component {
     }
   };
 
-  handleTypeChange = (e) => {
-    this.setState({
-      type: e.target.value,
-    });
-  };
+  function triggerCallback() {
+    setToUpdate(true);
+  }
 
-  displayTransactionList = (transactionList) => {
+  const displayTransactionList = (transactionList) => {
     return transactionList.map((transaction, index) => {
       const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
       const expense =
@@ -122,110 +90,108 @@ class TransactionPage extends React.Component {
     });
   };
 
-  render() {
-    const { classes } = this.props;
-    const { type, expense, selectedDate, category, expenseList } = this.state;
-    return (
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/">
-            <Container justify="center">
-              <Box m={10} />
-              <InputLabel htmlFor="outlined-adornment-amount">
-                Amount
-              </InputLabel>
-              <Grid container direction="column" component="div" spacing={3}>
-                <Grid item>
-                  <FormControl variant="outlined">
-                    <OutlinedInput
-                      type="number"
-                      id="outlined-adornment-amount"
-                      inputProps={{ "aria-label": "expenseInput" }}
-                      onChange={this.handleExpenseChange}
-                      startAdornment={
-                        <InputAdornment position="start">$</InputAdornment>
-                      }
-                    />
-                  </FormControl>
-                  <FormControl className={classes.formControl}>
-                    <InputLabel shrink>Type</InputLabel>
-                    <Select
-                      value={type}
-                      onChange={this.handleTypeChange}
-                      inputProps={{ "aria-label": "transactionType" }}
-                    >
-                      <MenuItem value={"Expense"}>Expense</MenuItem>
-                      <MenuItem value={"Income"}>Income</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <FormControl variant="outlined">
-                    <OutlinedInput
-                      type="text"
-                      id="outlined-adornment-category"
-                      inputProps={{ "aria-label": "categoryInput" }}
-                      onChange={this.handleCategoryChange}
-                      startAdornment={
-                        <InputAdornment position="start">
-                          Category
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid container item>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDatePicker
-                      margin="normal"
-                      id="date-picker-dialog"
-                      label="Date"
-                      format="MM/dd/yyyy"
-                      value={selectedDate}
-                      onChange={this.handleDateChange}
-                      inputProps={{ "aria-label": "dateInput" }}
-                      KeyboardButtonProps={{
-                        "aria-label": "change date",
-                      }}
-                    />
-                  </MuiPickersUtilsProvider>
-                </Grid>
-                <Grid item>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() =>
-                      this.handleSaveExpense(
-                        {
-                          expense: type === "Income" ? expense : -expense,
-                          date: selectedDate,
-                          category,
-                        },
-                        selectedDate
-                      )
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/">
+          <Container justify="center">
+            <Box m={10} />
+            <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+            <Grid container direction="column" component="div" spacing={3}>
+              <Grid item>
+                <FormControl variant="outlined">
+                  <OutlinedInput
+                    type="number"
+                    id="outlined-adornment-amount"
+                    inputProps={{ "aria-label": "expenseInput" }}
+                    onChange={(e) => setExpense(e.target.value)}
+                    startAdornment={
+                      <InputAdornment position="start">$</InputAdornment>
                     }
-                  >
-                    Save
-                  </Button>
-                </Grid>
+                  />
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel shrink label="transactionType">
+                    Type
+                  </InputLabel>
+                  <Select
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    defaultValue="Expense"
+                    inputProps={{ "aria-label": "transactionType" }}>
+                    <MenuItem value={"Expense"}>Expense</MenuItem>
+                    <MenuItem value={"Income"}>Income</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
-              <Grid container direction="column" spacing={3}>
-                {this.displayTransactionList(expenseList)}
+              <Grid item>
+                <FormControl variant="outlined">
+                  <OutlinedInput
+                    type="text"
+                    id="outlined-adornment-category"
+                    inputProps={{ "aria-label": "categoryInput" }}
+                    onChange={(e) => setCategory(e.target.value)}
+                    startAdornment={
+                      <InputAdornment position="start">Category</InputAdornment>
+                    }
+                    defaultValue={""}
+                  />
+                </FormControl>
               </Grid>
-            </Container>
-          </Route>
-          <Route
-            exact
-            path="/:uniqueKey"
-            render={(routeProps) => (
-              <ExpenseDetailsFull expenseList={expenseList} {...routeProps} />
-            )}
-          />
-        </Switch>
-      </BrowserRouter>
-    );
-  }
-}
+              <Grid container item>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <KeyboardDatePicker
+                    margin="normal"
+                    id="date-picker-dialog"
+                    label="Date"
+                    format="MM/dd/yyyy"
+                    value={selectedDate}
+                    onChange={(date) => setSelectedDate(date)}
+                    inputProps={{ "aria-label": "dateInput" }}
+                    KeyboardButtonProps={{
+                      "aria-label": "change date",
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    handleSaveExpense(
+                      {
+                        expense: type === "Income" ? expense : -expense,
+                        date: selectedDate,
+                        category,
+                      },
+                      selectedDate
+                    );
+                  }}>
+                  Save
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid container direction="column" spacing={3}>
+              {displayTransactionList(transactionList)}
+            </Grid>
+          </Container>
+        </Route>
+        <Route
+          exact
+          path="/:uniqueKey"
+          render={(routeProps) => (
+            <ExpenseDetailsFull
+              expenseList={transactionList}
+              {...routeProps}
+              triggerCallback={() => triggerCallback()}
+            />
+          )}
+        />
+      </Switch>
+    </BrowserRouter>
+  );
+};
 
 const styles = (theme) => ({
   formControl: {
