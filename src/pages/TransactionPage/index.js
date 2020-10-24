@@ -51,8 +51,8 @@ const TransactionPage = (props) => {
   const handleSaveExpense = async (item, date) => {
     try {
       const payload = {
-        expense: expense,
-        category: category,
+        expense,
+        category,
         date: selectedDate,
       };
       const newList = [...transactionList, item];
@@ -71,13 +71,17 @@ const TransactionPage = (props) => {
     setToUpdate(true);
   }
 
+  const checkType = (type, expense) => {
+    return type === "Income"
+      ? `$${expense}`
+      : `-$${Math.abs(expense)}`;
+  }
+
   const displayTransactionList = (transactionList) => {
     return transactionList.map((transaction, index) => {
       const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
-      const expense =
-        transaction.expense >= 0
-          ? `$${transaction.expense}`
-          : `-$${Math.abs(transaction.expense)}`;
+      const expense = checkType(type, transaction.expense)
+
       return (
         <ExpenseDetailsCard
           key={uniqueKey}
@@ -182,6 +186,7 @@ const TransactionPage = (props) => {
           path="/:uniqueKey"
           render={(routeProps) => (
             <ExpenseDetailsFull
+              checkType={checkType}
               expenseList={transactionList}
               {...routeProps}
               triggerCallback={() => triggerCallback()}

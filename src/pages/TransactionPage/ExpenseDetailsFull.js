@@ -26,7 +26,7 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 
-export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
+export const ExpenseDetailsFull = ({ expenseList, triggerCallback, checkType }) => {
   const { uniqueKey } = useParams();
   const position = uniqueKey.charAt(uniqueKey.length - 1);
   const [editState, setEditState] = React.useState(false);
@@ -64,9 +64,7 @@ export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
       <div>
         Category: {categoryValue} <br />
         Amount:{" "}
-        {typeValue === "Income"
-          ? `$${Math.abs(expenseValue)}`
-          : `-$${Math.abs(expenseValue)}`}
+        {checkType(typeValue, expenseValue)}
         <br />
         Date: {dateValue.toLocaleString()} <br />
       </div>
@@ -85,7 +83,8 @@ export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
           subheader={dateValue.toLocaleString()}
         />
         <CardContent>
-          {!editState && (
+          {!editState ? (
+
             <Typography
               data-testid="expense-list"
               variant="body2"
@@ -93,86 +92,84 @@ export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
               component="p">
               {updateFrontend()}
             </Typography>
-          )}
-          {editState && (
-            <Grid container direction="column">
-              <Grid item>
-                <FormControl variant="outlined">
-                  <OutlinedInput
-                    type="number"
-                    id="edit-amount-field"
-                    inputProps={{ "aria-label": "editExpenseInput" }}
-                    startAdornment={
-                      <InputAdornment position="start">$</InputAdornment>
-                    }
-                    defaultValue={Math.abs(expenseValue)}
-                    onChange={(e) => setExpenseValue(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl variant="outlined">
-                  <InputLabel shrink>Type</InputLabel>
-                  <Select
-                    value={typeValue}
-                    onChange={(e) => setTypeValue(e.target.value)}>
-                    <MenuItem value={"Expense"}>Expense</MenuItem>
-                    <MenuItem value={"Income"}>Income</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item>
-                <FormControl variant="outlined">
-                  <OutlinedInput
-                    type="text"
-                    id="edit-category-field"
-                    inputProps={{ "aria-label": "editCategoryInput" }}
-                    defaultValue={categoryValue}
-                    onChange={(e) => setCategoryValue(e.target.value)}
-                  />
-                </FormControl>
-              </Grid>
 
-              <Grid container item>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <KeyboardDatePicker
-                    margin="normal"
-                    id="date-picker-dialog"
-                    label="Date picker dialog"
-                    format="MM/dd/yyyy"
-                    inputProps={{ "aria-label": "editDateInput" }}
-                    KeyboardButtonProps={{
-                      "aria-label": "change date",
-                    }}
-                    onChange={(date) => setDateValue(date)}
-                    value={dateValue}
-                  />
-                </MuiPickersUtilsProvider>
+          ) : (
+
+              <Grid container direction="column">
+                <Grid item>
+                  <FormControl variant="outlined">
+                    <OutlinedInput
+                      type="number"
+                      id="edit-amount-field"
+                      inputProps={{ "aria-label": "editExpenseInput" }}
+                      startAdornment={
+                        <InputAdornment position="start">$</InputAdornment>
+                      }
+                      defaultValue={Math.abs(expenseValue)}
+                      onChange={(e) => setExpenseValue(e.target.value)}
+                    />
+                  </FormControl>
+                  <FormControl variant="outlined">
+                    <InputLabel shrink>Type</InputLabel>
+                    <Select
+                      value={typeValue}
+                      onChange={(e) => setTypeValue(e.target.value)}>
+                      <MenuItem value={"Expense"}>Expense</MenuItem>
+                      <MenuItem value={"Income"}>Income</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <FormControl variant="outlined">
+                    <OutlinedInput
+                      type="text"
+                      id="edit-category-field"
+                      inputProps={{ "aria-label": "editCategoryInput" }}
+                      defaultValue={categoryValue}
+                      onChange={(e) => setCategoryValue(e.target.value)}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid container item>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      margin="normal"
+                      id="date-picker-dialog"
+                      label="Date picker dialog"
+                      format="MM/dd/yyyy"
+                      inputProps={{ "aria-label": "editDateInput" }}
+                      KeyboardButtonProps={{
+                        "aria-label": "change date",
+                      }}
+                      onChange={(date) => setDateValue(date)}
+                      value={dateValue}
+                    />
+                  </MuiPickersUtilsProvider>
+                </Grid>
               </Grid>
-            </Grid>
-          )}
+            )}
         </CardContent>
         <CardActions>
-          {!editState && (
+          {!editState ? (
             <IconButton onClick={() => setEditState(true)}>
               <EditIcon />
             </IconButton>
-          )}
-          {editState && (
-            <IconButton
-              onClick={() => {
-                updateRecord({
-                  id: idValue,
-                  expense:
-                    typeValue === "Income"
-                      ? Math.abs(expenseValue)
-                      : -Math.abs(expenseValue),
-                  category: categoryValue,
-                  date: dateValue,
-                });
-                setEditState(false);
-              }}>
-              <SaveIcon />
-            </IconButton>
-          )}
+          ) :
+            (
+              <IconButton
+                onClick={() => {
+                  updateRecord({
+                    id: idValue,
+                    expense: checkType(typeValue, expenseValue),
+                    category: categoryValue,
+                    date: dateValue,
+                  });
+                  setEditState(false);
+                }}>
+                <SaveIcon />
+              </IconButton>
+            )}
           <IconButton onClick={() => console.log("delete")}>
             <DeleteIcon />
           </IconButton>
