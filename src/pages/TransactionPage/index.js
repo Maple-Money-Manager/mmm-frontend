@@ -71,8 +71,8 @@ const TransactionPage = (props) => {
     setToUpdate(true);
   }
 
-  const checkType = (type, expense) => {
-    return type === "Income"
+  const checkValue = (expense) => {
+    return expense >= 0
       ? `$${expense}`
       : `-$${Math.abs(expense)}`;
   }
@@ -80,7 +80,7 @@ const TransactionPage = (props) => {
   const displayTransactionList = (transactionList) => {
     return transactionList.map((transaction, index) => {
       const uniqueKey = `${transaction.category}${transaction.expense}${transaction.date}${index}`;
-      const expense = checkType(type, transaction.expense)
+      const expense = checkValue(transaction.expense)
 
       return (
         <ExpenseDetailsCard
@@ -186,7 +186,6 @@ const TransactionPage = (props) => {
           path="/:uniqueKey"
           render={(routeProps) => (
             <ExpenseDetailsFull
-              checkType={checkType}
               expenseList={transactionList}
               {...routeProps}
               triggerCallback={() => triggerCallback()}

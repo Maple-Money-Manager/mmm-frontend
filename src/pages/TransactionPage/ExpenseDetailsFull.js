@@ -26,7 +26,7 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 
-export const ExpenseDetailsFull = ({ expenseList, triggerCallback, checkType }) => {
+export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
   const { uniqueKey } = useParams();
   const position = uniqueKey.charAt(uniqueKey.length - 1);
   const [editState, setEditState] = React.useState(false);
@@ -59,12 +59,19 @@ export const ExpenseDetailsFull = ({ expenseList, triggerCallback, checkType }) 
     }
   };
 
+  const checkType = (type) => {
+    return type === "Income"
+      ? `$${Math.abs(expenseValue)}`
+      : `-$${Math.abs(expenseValue)}`
+  }
+
   function updateFrontend() {
+    console.log(expenseValue)
     return (
       <div>
         Category: {categoryValue} <br />
         Amount:{" "}
-        {checkType(typeValue, expenseValue)}
+        {checkType(typeValue)}
         <br />
         Date: {dateValue.toLocaleString()} <br />
       </div>
@@ -161,7 +168,9 @@ export const ExpenseDetailsFull = ({ expenseList, triggerCallback, checkType }) 
                 onClick={() => {
                   updateRecord({
                     id: idValue,
-                    expense: checkType(typeValue, expenseValue),
+                    expense: typeValue === "Income"
+                      ? Math.abs(expenseValue)
+                      : -Math.abs(expenseValue),
                     category: categoryValue,
                     date: dateValue,
                   });
