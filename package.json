@@ -8,15 +8,15 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^11.0.2",
+    "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.20.0",
-    "date-fns": "^2.15.0",
+    "date-fns": "^2.16.1",
     "moment": "^2.29.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.3"
+    "react-scripts": "^3.4.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -43,13 +43,13 @@
   },
   "devDependencies": {
     "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jest": "^23.17.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.20.2",
-    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-standard": "^4.0.2",
     "jest-environment-jsdom-sixteen": "^1.0.3"
   }
 }

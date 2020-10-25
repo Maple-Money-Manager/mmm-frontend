@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams, Link } from "react-router-dom";
 import {
   Grid,
   Card,
@@ -14,10 +15,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Dialog,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { Save as SaveIcon, Delete as DeleteIcon } from "@material-ui/icons";
-import { useParams, Link } from "react-router-dom";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -40,6 +41,7 @@ export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
   const [typeValue, setTypeValue] = React.useState(
     expenseList[position].expense > 0 ? "Income" : "Expense"
   );
+  const [recordId] = React.useState(expenseList[position].id);
   const idValue = parseInt(position) + 1;
 
   const updateRecord = async (item) => {
@@ -59,19 +61,24 @@ export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
     }
   };
 
-  const checkType = (type) => {
-    return type === "Income"
-      ? `$${Math.abs(expenseValue)}`
-      : `-$${Math.abs(expenseValue)}`
-  }
+  const deleteRecord = async () => {
+    const id = recordId;
+    try {
+      await Axios.delete(`http://localhost:3000/records/${id}`);
+      console.log("success");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   function updateFrontend() {
-    console.log(expenseValue)
     return (
       <div>
         Category: {categoryValue} <br />
         Amount:{" "}
-        {checkType(typeValue)}
+        {typeValue === "Income"
+          ? `$${Math.abs(expenseValue)}`
+          : `-$${Math.abs(expenseValue)}`}
         <br />
         Date: {dateValue.toLocaleString()} <br />
       </div>
@@ -90,96 +97,98 @@ export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
           subheader={dateValue.toLocaleString()}
         />
         <CardContent>
-          {!editState ? (
-
+          {!editState && (
             <Typography
               data-testid="expense-list"
               variant="body2"
               color="textSecondary"
-              component="p">
+              component="p"
+            >
               {updateFrontend()}
             </Typography>
-
-          ) : (
-
-              <Grid container direction="column">
-                <Grid item>
-                  <FormControl variant="outlined">
-                    <OutlinedInput
-                      type="number"
-                      id="edit-amount-field"
-                      inputProps={{ "aria-label": "editExpenseInput" }}
-                      startAdornment={
-                        <InputAdornment position="start">$</InputAdornment>
-                      }
-                      defaultValue={Math.abs(expenseValue)}
-                      onChange={(e) => setExpenseValue(e.target.value)}
-                    />
-                  </FormControl>
-                  <FormControl variant="outlined">
-                    <InputLabel shrink>Type</InputLabel>
-                    <Select
-                      value={typeValue}
-                      onChange={(e) => setTypeValue(e.target.value)}>
-                      <MenuItem value={"Expense"}>Expense</MenuItem>
-                      <MenuItem value={"Income"}>Income</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <FormControl variant="outlined">
-                    <OutlinedInput
-                      type="text"
-                      id="edit-category-field"
-                      inputProps={{ "aria-label": "editCategoryInput" }}
-                      defaultValue={categoryValue}
-                      onChange={(e) => setCategoryValue(e.target.value)}
-                    />
-                  </FormControl>
-                </Grid>
-
-                <Grid container item>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDatePicker
-                      margin="normal"
-                      id="date-picker-dialog"
-                      label="Date picker dialog"
-                      format="MM/dd/yyyy"
-                      inputProps={{ "aria-label": "editDateInput" }}
-                      KeyboardButtonProps={{
-                        "aria-label": "change date",
-                      }}
-                      onChange={(date) => setDateValue(date)}
-                      value={dateValue}
-                    />
-                  </MuiPickersUtilsProvider>
-                </Grid>
+          )}
+          {editState && (
+            <Grid container direction="column">
+              <Grid item>
+                <FormControl variant="outlined">
+                  <OutlinedInput
+                    type="number"
+                    id="edit-amount-field"
+                    inputProps={{ "aria-label": "editExpenseInput" }}
+                    startAdornment={
+                      <InputAdornment position="start">$</InputAdornment>
+                    }
+                    defaultValue={Math.abs(expenseValue)}
+                    onChange={(e) => setExpenseValue(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl variant="outlined">
+                  <InputLabel shrink>Type</InputLabel>
+                  <Select
+                    value={typeValue}
+                    onChange={(e) => setTypeValue(e.target.value)}
+                  >
+                    <MenuItem value={"Expense"}>Expense</MenuItem>
+                    <MenuItem value={"Income"}>Income</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
-            )}
+              <Grid item>
+                <FormControl variant="outlined">
+                  <OutlinedInput
+                    type="text"
+                    id="edit-category-field"
+                    inputProps={{ "aria-label": "editCategoryInput" }}
+                    defaultValue={categoryValue}
+                    onChange={(e) => setCategoryValue(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid container item>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <KeyboardDatePicker
+                    margin="normal"
+                    id="date-picker-dialog"
+                    label="Date picker dialog"
+                    format="MM/dd/yyyy"
+                    inputProps={{ "aria-label": "editDateInput" }}
+                    KeyboardButtonProps={{
+                      "aria-label": "change date",
+                    }}
+                    onChange={(date) => setDateValue(date)}
+                    value={dateValue}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
+            </Grid>
+          )}
         </CardContent>
         <CardActions>
-          {!editState ? (
+          {!editState && (
             <IconButton onClick={() => setEditState(true)}>
               <EditIcon />
             </IconButton>
-          ) :
-            (
-              <IconButton
-                onClick={() => {
-                  updateRecord({
-                    id: idValue,
-                    expense: typeValue === "Income"
+          )}
+          {editState && (
+            <IconButton
+              onClick={() => {
+                updateRecord({
+                  id: idValue,
+                  expense:
+                    typeValue === "Income"
                       ? Math.abs(expenseValue)
                       : -Math.abs(expenseValue),
-                    category: categoryValue,
-                    date: dateValue,
-                  });
-                  setEditState(false);
-                }}>
-                <SaveIcon />
-              </IconButton>
-            )}
-          <IconButton onClick={() => console.log("delete")}>
+                  category: categoryValue,
+                  date: dateValue,
+                });
+                setEditState(false);
+              }}
+            >
+              <SaveIcon />
+            </IconButton>
+          )}
+          <IconButton onClick={() => deleteRecord()}>
             <DeleteIcon />
           </IconButton>
         </CardActions>

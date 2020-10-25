@@ -41,6 +41,7 @@ const TransactionPage = (props) => {
         expense: record.expense,
         category: record.category,
         date: moment(record.date).format("LLL"),
+        id: record.id,
       }));
       setTransactionList([...transactionRecords]);
     } catch (err) {
@@ -122,7 +123,8 @@ const TransactionPage = (props) => {
                     value={type}
                     onChange={(e) => setType(e.target.value)}
                     defaultValue="Expense"
-                    inputProps={{ "aria-label": "transactionType" }}>
+                    inputProps={{ "aria-label": "transactionType" }}
+                  >
                     <MenuItem value={"Expense"}>Expense</MenuItem>
                     <MenuItem value={"Income"}>Income</MenuItem>
                   </Select>
@@ -171,7 +173,8 @@ const TransactionPage = (props) => {
                       },
                       selectedDate
                     );
-                  }}>
+                  }}
+                >
                   Save
                 </Button>
               </Grid>
