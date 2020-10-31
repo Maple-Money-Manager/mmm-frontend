@@ -11,12 +11,12 @@ import "date-fns";
 import moment from "moment";
 import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
-import ExpenseDetailsCard from "./ExpenseDetailsCard";
+import ExpenseDetailsCard from "./components/ExpenseDetailsCard";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
-import { ExpenseDetailsFull } from "./ExpenseDetailsFull";
+import { ExpenseDetailsFull } from "../ExpenseDetailsPage";
 
 const TransactionPage = (props) => {
   const { classes } = props;
