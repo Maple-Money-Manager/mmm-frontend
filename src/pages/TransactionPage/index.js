@@ -16,7 +16,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
-import { ExpenseDetailsFull } from "../ExpenseDetailsPage";
+import { ExpenseDetailsPage } from "../ExpenseDetailsPage";
 
 const TransactionPage = (props) => {
   const { classes } = props;
@@ -188,7 +188,7 @@ const TransactionPage = (props) => {
           exact
           path="/:uniqueKey"
           render={(routeProps) => (
-            <ExpenseDetailsFull
+            <ExpenseDetailsPage
               expenseList={transactionList}
               {...routeProps}
               triggerCallback={() => triggerCallback()}

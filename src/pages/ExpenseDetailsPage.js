@@ -27,7 +27,7 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 
-export const ExpenseDetailsFull = ({ expenseList, triggerCallback }) => {
+export const ExpenseDetailsPage = ({ expenseList, triggerCallback }) => {
   const { uniqueKey } = useParams();
   const position = uniqueKey.charAt(uniqueKey.length - 1);
   const [editState, setEditState] = React.useState(false);
